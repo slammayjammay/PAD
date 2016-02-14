@@ -6,7 +6,6 @@
     }
 
     $('#board').on('mousedown', this.mousedown.bind(this));
-    $(window).on('mouseup', this.mouseup.bind(this));
   };
 
   Game.prototype.getBoardLocation = function (e) {
@@ -19,14 +18,18 @@
     e.preventDefault();
     $(window).on('mousemove', this.mousemove.bind(this));
 
-    this.currentPos = this.getBoardLocation(e);
     this.showSelectedOrb(e);
-    this.board[this.currentPos[0]][this.currentPos[1]].click();
+    var currentPos = this.getBoardLocation(e);
+    this.board[currentPos[0]][currentPos[1]].click();
 
     $('.orb:not(.clicked, .selected) .swap-region').mouseenter(function (e) {
       var nextPos = this.getBoardLocation(e);
-      this.swapOrbs(this.currentPos, nextPos);
-      this.currentPos = nextPos;
+      this.swapOrbs(currentPos, nextPos);
+      currentPos = nextPos;
+    }.bind(this));
+
+    $(window).one('mouseup', function () {
+      this.mouseup(currentPos);
     }.bind(this));
   };
 
@@ -35,15 +38,15 @@
     this.$image.css('top', e.clientY - 45 + 'px');
   };
 
-  Game.prototype.mouseup = function () {
+  Game.prototype.mouseup = function (currentPos) {
     $(window).off('mousemove');
     $('.selected').remove();
     $('.swap-region').unbind('mouseenter');
-    this.board[this.currentPos[0]][this.currentPos[1]].release();
+    this.board[currentPos[0]][currentPos[1]].release();
   };
 
   Game.prototype.showSelectedOrb = function (e) {
-    var src = Orb.colorUrls[this.board[this.currentPos[0]][this.currentPos[1]].color];
+    var src = $(e.target).parent().find('img').attr('src');
     this.$image = $('<img>').attr('src', src).addClass('orb selected');
     this.$image.css('position', 'absolute');
     this.$image.css('left', e.clientX - 45 + 'px');
