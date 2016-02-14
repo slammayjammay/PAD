@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Puzzle and Dragons</title>
+    <link rel=StyleSheet href="style.css" type="text/css">
+		<script type="application/javascript" src="jquery-2.1.4.min.js"></script>
+		<script type="application/javascript" src="event_handler.js"></script>
+		<script type="application/javascript" src="orb.js"></script>
+	</head>
+	<body>
+    <div id="game">
+      <div id="board"></div>
+    </div>
+
+    <script>
+			var game = new Game();
+
+			var colors = ['r', 'b', 'g', 'l', 'd', 'h'];
+			for (var i = 0; i < 6; i++) {
+				for (var j = 0; j < 5; j++) {
+					var randIndex = ~~(Math.random() * colors.length);
+					var orb = new Orb(colors[randIndex], [j, i]);
+
+					game.board[j][i] = orb;
+				}
+			}
+    </script>
+	</body>
+</html>

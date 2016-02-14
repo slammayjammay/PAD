@@ -1,0 +1,43 @@
+#game {
+  margin: auto;
+  width: 540px;
+  height: 450px;
+  background: black;
+  padding: 15px;
+}
+
+#board {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-image: url('http://pad.dawnglare.com/bg.png');
+  background-size: 180px;
+}
+
+.orb {
+  /*transition: 50ms;*/
+  position: absolute;
+  width: 90px;
+  height: 90px;
+}
+
+.orb.selected {
+  pointer-events: none;
+  opacity: .8;
+}
+
+.orb img {
+  width: 100%;
+  height: auto;
+}
+
+.orb .swap-region {
+  position: absolute;
+  width: 90%;
+  height: 90%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  top: 50%;
+  transform: translateY(-50%);
+}
