@@ -15,7 +15,7 @@
 }
 
 .orb {
-  /*transition: 50ms;*/
+  transition: 50ms;
   position: absolute;
   width: 90px;
   height: 90px;
