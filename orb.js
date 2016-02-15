@@ -22,14 +22,20 @@
     'h': 'http://pad.dawnglare.com/Heart.png'
   };
 
-  Orb.prototype.click = function () {
-    this.$orb.css('opacity', 0.3).addClass('clicked');
-  };
-
   Orb.prototype.addOrbToBoard = function () {
     this.$orb.css('top', this.imageWidth * this.pos[0] + 'px');
     this.$orb.css('left', this.imageWidth * this.pos[1] + 'px');
     $('#board').append(this.$orb);
+  };
+
+  Orb.prototype.click = function () {
+    this.$orb.css('opacity', 0.3).addClass('clicked');
+  };
+
+  Orb.prototype.isSameAs = function (orb2) {
+    if (this.pos[0] === orb2.pos[0] && this.pos[1] === orb2.pos[1]) {
+      return true;
+    }
   };
 
   Orb.prototype.release = function () {
