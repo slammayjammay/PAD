@@ -51,4 +51,10 @@
 
     return false;
   };
+
+  Match.prototype.remove = function () {
+    this.orbs.forEach(function (orb) {
+      orb.remove();
+    });
+  };
 })();
