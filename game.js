@@ -1,17 +1,21 @@
 (function  () {
   window.Game = function () {
     this.board = [];
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < 10; i++) {
       this.board.push([]);
     }
 
     $('#board').on('mousedown', this.mousedown.bind(this));
   };
 
-  Game.prototype.getBoardLocation = function (e) {
-    var top = ~~(e.clientY) - $('#board').offset().top;
-    var left = ~~(e.clientX) - $('#board').offset().left;
-    return [~~(top / 90), ~~(left / 90)];
+  Game.prototype.createSkyfallOrb = function (pos) {
+    var col = pos[1];
+    for (var i = 0; i < 5; i++) {
+      if (!this.board[5 + i][col]) {
+        var orb = new Orb.random([5 + i, col], this.board);
+        orb.addToBoard();
+      }
+    }
   };
 
   Game.prototype.findHorizontalMatches = function () {
@@ -51,7 +55,7 @@
         while (this.board[i + k][j].color === color) {
           matchLength += 1;
           k += 1;
-          if (!this.board[i + k]) break;
+          if (!this.board[i + k][j]) break;
         }
         if (matchLength >= 3) {
           if (!matches[color]) matches[color] = [];
@@ -66,6 +70,24 @@
       }
     }
     return matches;
+  };
+
+  Game.prototype.getBoardLocation = function (e) {
+    var top = ~~(e.clientY) - $('#board').offset().top;
+    var left = ~~(e.clientX) - $('#board').offset().left;
+    return [4 - ~~(top / 90), ~~(left / 90)];
+  };
+
+  Game.prototype.getColumnEmpties = function () {
+    var columns = [];
+    for (var i = 0; i < 5; i++) {
+      for (var j = 0; j < 6; j++) {
+        if (!this.board[i][j]) {
+          columns.push([i, j]);
+        }
+      }
+    }
+    return columns;
   };
 
   Game.prototype.getMatches = function () {
@@ -130,23 +152,27 @@
   };
 
   Game.prototype.populateBoard = function () {
-    var colors = ['r', 'b', 'g', 'l', 'd', 'h'];
     for (var i = 0; i < 6; i++) {
       for (var j = 0; j < 5; j++) {
-        var randIndex = ~~(Math.random() * colors.length);
-        var orb = new Orb(colors[randIndex], [j, i]);
-
-        this.board[j][i] = orb;
+        var orb = Orb.random([j, i], this.board);
+        orb.addToBoard();
       }
     }
   };
 
   Game.prototype.removeMatches = function (allMatches) {
-    allMatches.pop().remove();
+    var firstMatch = allMatches.pop();
+    if (firstMatch) firstMatch.remove();
+
     var id = setInterval(function () {
       var match = allMatches.pop();
-      match ? match.remove() : clearInterval(id);
-    }, 500);
+      if (match) {
+        match.remove();
+      } else {
+        clearInterval(id);
+        this.skyfall();
+      }
+    }.bind(this), 500);
   };
 
   Game.prototype.removeSelectedOrb = function () {
@@ -160,6 +186,14 @@
     this.$selectedOrb.css('left', e.clientX - 45 + 'px');
     this.$selectedOrb.css('top', e.clientY - 45 + 'px');
     $('body').append(this.$selectedOrb);
+  };
+
+  Game.prototype.skyfall = function () {
+    var columnEmpties = this.getColumnEmpties();
+
+    for (var i = 0; i < columnEmpties.length; i++) {
+      this.createSkyfallOrb(columnEmpties[i]);
+    }
   };
 
   Game.prototype.swapOrbs = function (currentPos, nextPos) {
