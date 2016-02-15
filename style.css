@@ -22,7 +22,7 @@
 }
 
 .orb.gravity {
-  transition: 500ms;
+  transition: 600ms;
 }
 
 .orb#drag {
@@ -35,7 +35,7 @@
 }
 
 .orb.matched {
-  transition: 800ms;
+  transition: 600ms;
   opacity: 0;
 }
 
