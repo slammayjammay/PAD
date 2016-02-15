@@ -21,6 +21,10 @@
   height: 90px;
 }
 
+.orb.gravity {
+  transition: 500ms;
+}
+
 .orb#drag {
   pointer-events: none;
   opacity: .8;
@@ -32,6 +36,10 @@
 
 .orb.matched {
   transition: 800ms;
+  opacity: 0;
+}
+
+.orb.skyfall {
   opacity: 0;
 }
 
