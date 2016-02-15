@@ -12,8 +12,7 @@
     var col = pos[1];
     for (var i = 0; i < 5; i++) {
       if (!this.board[5 + i][col]) {
-        var orb = new Orb.random([5 + i, col], this.board);
-        orb.$orb.addClass('skyfall');
+        var orb = new Orb.skyfall([5 + i, col], this.board);
         orb.addToBoard();
         return;
       }
@@ -102,6 +101,8 @@
   };
 
   Game.prototype.gravity = function (empties) {
+    $('.skyfall').removeClass('skyfall');
+
     var orbsToFall = [];
     for (var i = 0; i < empties.length; i++) {
       orbsToFall = orbsToFall.concat(this.getOrbsAbovePos(empties[i]));
@@ -110,6 +111,7 @@
       orbsToFall[idx].fall();
       if (idx === orbsToFall.length - 1) {
         orbsToFall[idx].$orb.one('transitionend', function () {
+          $('.gravity').removeClass('gravity');
           setTimeout(this.match.bind(this), 100);
         }.bind(this));
       }
