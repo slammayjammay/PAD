@@ -21,9 +21,18 @@
   height: 90px;
 }
 
-.orb.selected {
+.orb#drag {
   pointer-events: none;
   opacity: .8;
+}
+
+.orb#clicked {
+  opacity: .3;
+}
+
+.orb.matched {
+  transition: 800ms;
+  opacity: 0;
 }
 
 .orb img {
