@@ -29,7 +29,7 @@
   };
 
   Orb.prototype.click = function () {
-    this.$orb.css('opacity', 0.3).addClass('clicked');
+    this.$orb.attr('id', 'clicked');
   };
 
   Orb.prototype.isSameAs = function (orb2) {
@@ -39,7 +39,14 @@
   };
 
   Orb.prototype.release = function () {
-    this.$orb.css('opacity', 1).removeClass('clicked');
+    this.$orb.removeAttr('id');
+  };
+
+  Orb.prototype.remove = function () {
+    this.$orb.addClass('matched');
+    this.$orb.one('transitionend', function () {
+      this.$orb.remove();
+    }.bind(this));
   };
 
   Orb.prototype.updatePos = function (newPos) {
