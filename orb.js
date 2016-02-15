@@ -1,16 +1,15 @@
 (function () {
-  window.Orb = function (color, pos) {
+  window.Orb = function (color, pos, board) {
     this.imageWidth = 90;
+
     this.color = color;
     this.pos = pos;
+    this.board = board;
 
-    // create orb html
     this.$orb = $('<div class="orb">');
     this.$orb.append($('<div class="swap-region">'));
     var $image = $('<img>').attr('src', Orb.colorUrls[this.color]);
     this.$orb.append($image);
-
-    this.addOrbToBoard();
   }
 
   Orb.colorUrls = {
@@ -22,8 +21,16 @@
     'h': 'http://pad.dawnglare.com/Heart.png'
   };
 
-  Orb.prototype.addOrbToBoard = function () {
-    this.$orb.css('top', this.imageWidth * this.pos[0] + 'px');
+  Orb.random = function (pos, board) {
+    var colors = Object.keys(Orb.colorUrls);
+    var randIndex = ~~(Math.random() * colors.length);
+    return new Orb(colors[randIndex], pos, board);
+  };
+
+  Orb.prototype.addToBoard = function () {
+    this.board[this.pos[0]][this.pos[1]] = this;
+
+    this.$orb.css('bottom', this.imageWidth * this.pos[0] + 'px');
     this.$orb.css('left', this.imageWidth * this.pos[1] + 'px');
     $('#board').append(this.$orb);
   };
@@ -43,6 +50,7 @@
   };
 
   Orb.prototype.remove = function () {
+    this.board[this.pos[0]][this.pos[1]] = undefined;
     this.$orb.addClass('matched');
     this.$orb.one('transitionend', function () {
       this.$orb.remove();
@@ -51,7 +59,8 @@
 
   Orb.prototype.updatePos = function (newPos) {
     this.pos = newPos;
-    this.$orb.css('top', this.imageWidth * this.pos[0] + 'px');
+
+    this.$orb.css('bottom', this.imageWidth * this.pos[0] + 'px');
     this.$orb.css('left', this.imageWidth * this.pos[1] + 'px');
   };
 })();
