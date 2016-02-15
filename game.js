@@ -68,7 +68,7 @@
     return matches;
   };
 
-  Game.prototype.match = function () {
+  Game.prototype.getMatches = function () {
     var horizontal = this.findHorizontalMatches();
     var vertical = this.findVerticalMatches();
     var allMatches = horizontal.concat(vertical);
@@ -92,6 +92,8 @@
     allMatches = allMatches.filter(function (el) {
       return el != undefined;
     });
+
+    this.removeMatches(allMatches);
   };
 
   Game.prototype.mousedown = function (e) {
@@ -102,7 +104,7 @@
     var currentPos = this.getBoardLocation(e);
     this.board[currentPos[0]][currentPos[1]].click();
 
-    $('.orb:not(.clicked, .selected) .swap-region').mouseenter(function (e) {
+    $('.orb:not(#clicked, #drag) .swap-region').mouseenter(function (e) {
       var nextPos = this.getBoardLocation(e);
       this.swapOrbs(currentPos, nextPos);
       currentPos = nextPos;
@@ -114,16 +116,17 @@
   };
 
   Game.prototype.mousemove = function (e) {
-    this.$image.css('left', e.clientX - 45 + 'px');
-    this.$image.css('top', e.clientY - 45 + 'px');
+    this.$selectedOrb.css('left', e.clientX - 45 + 'px');
+    this.$selectedOrb.css('top', e.clientY - 45 + 'px');
   };
 
   Game.prototype.mouseup = function (currentPos) {
     $(window).off('mousemove');
-    $('.selected').remove();
+    $('#drag').remove();
     $('.swap-region').unbind('mouseenter');
     this.board[currentPos[0]][currentPos[1]].release();
-    this.match();
+    this.removeSelectedOrb();
+    this.getMatches();
   };
 
   Game.prototype.populateBoard = function () {
@@ -138,13 +141,25 @@
     }
   };
 
+  Game.prototype.removeMatches = function (allMatches) {
+    allMatches.pop().remove();
+    var id = setInterval(function () {
+      var match = allMatches.pop();
+      match ? match.remove() : clearInterval(id);
+    }, 500);
+  };
+
+  Game.prototype.removeSelectedOrb = function () {
+    this.$selectedOrb.remove();
+  };
+
   Game.prototype.showSelectedOrb = function (e) {
     var src = $(e.target).parent().find('img').attr('src');
-    this.$image = $('<img>').attr('src', src).addClass('orb selected');
-    this.$image.css('position', 'absolute');
-    this.$image.css('left', e.clientX - 45 + 'px');
-    this.$image.css('top', e.clientY - 45 + 'px');
-    $('body').append(this.$image);
+    this.$selectedOrb = $('<img class="orb">').attr('src', src).attr('id', 'drag');
+    this.$selectedOrb.css('position', 'absolute');
+    this.$selectedOrb.css('left', e.clientX - 45 + 'px');
+    this.$selectedOrb.css('top', e.clientY - 45 + 'px');
+    $('body').append(this.$selectedOrb);
   };
 
   Game.prototype.swapOrbs = function (currentPos, nextPos) {
