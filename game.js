@@ -96,6 +96,14 @@
     return matches;
   };
 
+  Game.prototype.getAllMatches = function () {
+    var horizontal = this.findHorizontalMatches();
+    var vertical = this.findVerticalMatches();
+    var allMatches = horizontal.concat(vertical);
+
+    return this.mergeMatches(allMatches);
+  };
+
   Game.prototype.getBoardLocation = function (e) {
     var top = ~~(e.clientY) - $('#board').offset().top;
     var left = ~~(e.clientX) - $('#board').offset().left;
@@ -142,10 +150,11 @@
   };
 
   Game.prototype.match = function () {
-    var horizontal = this.findHorizontalMatches();
-    var vertical = this.findVerticalMatches();
-    var allMatches = horizontal.concat(vertical);
+    var allMatches = this.getAllMatches();
+    this.removeMatches(allMatches);
+  };
 
+  Game.prototype.mergeMatches = function (allMatches) {
     var connectedIndices = [];
     for (var i = 0; i < allMatches.length; i++) {
       for (var j = i + 1; j < allMatches.length; j++) {
@@ -165,8 +174,7 @@
     allMatches = allMatches.filter(function (el) {
       return el != undefined;
     });
-
-    this.removeMatches(allMatches);
+    return allMatches;
   };
 
   Game.prototype.mousedown = function (e) {
