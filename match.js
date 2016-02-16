@@ -52,6 +52,12 @@
     return false;
   };
 
+  Match.prototype.randomize = function () {
+    for (var i = 0; i < this.orbs.length; i++) {
+      this.orbs[i].randomizeColor();
+    }
+  };
+
   Match.prototype.remove = function () {
     this.orbs.forEach(function (orb) {
       orb.remove();
