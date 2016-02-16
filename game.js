@@ -34,6 +34,14 @@
     }
   };
 
+  Game.prototype.detectNewPosition = function (e) {
+    var newPos = this.getBoardLocation(e);
+    if (this.currentPos[0] !== newPos[0] || this.currentPos[1] !== newPos[1]) {
+      this.swapOrbs(this.currentPos, newPos);
+      this.currentPos = newPos;
+    }
+  };
+
   Game.prototype.findHorizontalMatches = function () {
     var matches = [];
     for (var i = 0; i < 5; i++) {
@@ -166,32 +174,27 @@
     $(window).on('mousemove', this.mousemove.bind(this));
 
     this.showSelectedOrb(e);
-    var currentPos = this.getBoardLocation(e);
-    this.board[currentPos[0]][currentPos[1]].click();
-
-    $('.orb:not(#clicked, #drag) .swap-region').mouseenter(function (e) {
-      var nextPos = this.getBoardLocation(e);
-      this.swapOrbs(currentPos, nextPos);
-      currentPos = nextPos;
-    }.bind(this));
+    this.currentPos = this.getBoardLocation(e);
+    this.board[this.currentPos[0]][this.currentPos[1]].click();
 
     $(window).one('mouseup', function () {
-      this.mouseup(currentPos);
+      this.mouseup();
     }.bind(this));
   };
 
   Game.prototype.mousemove = function (e) {
     this.containSelectedOrb(e);
+    this.detectNewPosition(e);
 
     this.$selectedOrb.css('left', e.clientX - 45 + 'px');
     this.$selectedOrb.css('top', e.clientY - 45 + 'px');
   };
 
-  Game.prototype.mouseup = function (currentPos) {
+  Game.prototype.mouseup = function () {
     $(window).off('mousemove');
     $('#drag').remove();
     $('.swap-region').unbind('mouseenter');
-    this.board[currentPos[0]][currentPos[1]].release();
+    this.board[this.currentPos[0]][this.currentPos[1]].release();
     this.removeSelectedOrb();
     this.match();
   };
