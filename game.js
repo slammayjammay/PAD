@@ -35,7 +35,9 @@
   };
 
   Game.prototype.detectNewPosition = function (e) {
-    var newPos = this.getBoardLocation(e);
+    var newPos = this.getBoardLocation(e, true);
+    if (!newPos) return;
+
     if (this.currentPos[0] !== newPos[0] || this.currentPos[1] !== newPos[1]) {
       this.swapOrbs(this.currentPos, newPos);
       this.currentPos = newPos;
@@ -114,9 +116,23 @@
     return this.mergeMatches(allMatches);
   };
 
-  Game.prototype.getBoardLocation = function (e) {
-    var top = ~~(e.clientY) - $('#board').offset().top;
-    var left = ~~(e.clientX) - $('#board').offset().left;
+  Game.prototype.getBoardLocation = function (e, flag) {
+    // if flag then will only return a board location if the cursor is within
+    // some distance of the boundaries
+
+    var top = (e.clientY) - $('#board').offset().top;
+    var left = (e.clientX) - $('#board').offset().left;
+
+    if (flag) {
+      var topBorder = ~~(top / 90) * 90;
+      var bottomBorder = topBorder + 90;
+      var leftBorder = ~~(left / 90) * 90;
+      var rightBorder = leftBorder + 90;
+
+      if (top - topBorder < 5 || Math.abs(top - bottomBorder) < 5) return;
+      if (left - leftBorder < 5 || Math.abs(left - rightBorder) < 5) return;
+    }
+
     return [4 - ~~(top / 90), ~~(left / 90)];
   };
 
