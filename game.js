@@ -8,6 +8,21 @@
     $('#board').on('mousedown', this.mousedown.bind(this));
   };
 
+  Game.prototype.containSelectedOrb = function (e) {
+    if (e.clientX < $('#board').offset().left + 45) {
+      e.clientX = $('#board').offset().left + 45;
+    }
+    if (e.clientX > $('#board').offset().left + $('#board').width() - 45) {
+      e.clientX = $('#board').offset().left + $('#board').width() - 45;
+    }
+    if (e.clientY < $('#board').offset().top + 45) {
+      e.clientY = $('#board').offset().top + 45;
+    }
+    if (e.clientY > $('#board').offset().top + $('#board').height() - 45) {
+      e.clientY = $('#board').offset().top + $('#board').height() - 45;
+    }
+  };
+
   Game.prototype.createSkyfallOrb = function (pos) {
     var col = pos[1];
     for (var i = 0; i < 5; i++) {
@@ -166,6 +181,8 @@
   };
 
   Game.prototype.mousemove = function (e) {
+    this.containSelectedOrb(e);
+
     this.$selectedOrb.css('left', e.clientX - 45 + 'px');
     this.$selectedOrb.css('top', e.clientY - 45 + 'px');
   };
