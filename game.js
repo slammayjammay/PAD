@@ -42,6 +42,16 @@
     }
   };
 
+  Game.prototype.ensureNoMatches = function () {
+    var matches = this.getAllMatches();
+    while (matches.length > 0) {
+      for (var i = 0; i < matches.length; i++) {
+        matches[i].randomize();
+      }
+      matches = this.getAllMatches();
+    }
+  };
+
   Game.prototype.findHorizontalMatches = function () {
     var matches = [];
     for (var i = 0; i < 5; i++) {
@@ -214,6 +224,8 @@
         orb.addToBoard();
       }
     }
+
+    this.ensureNoMatches();
   };
 
   Game.prototype.removeMatches = function (allMatches) {
