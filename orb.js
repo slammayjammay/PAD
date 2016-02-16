@@ -60,6 +60,13 @@
     }
   };
 
+  Orb.prototype.randomizeColor = function () {
+    var colors = Object.keys(Orb.colorUrls);
+    var randIndex = ~~(Math.random() * colors.length);
+    this.color = colors[randIndex];
+    this.$orb.find('img').attr('src', Orb.colorUrls[this.color]);
+  };
+
   Orb.prototype.release = function () {
     this.$orb.removeAttr('id');
   };
