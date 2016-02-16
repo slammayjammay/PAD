@@ -120,8 +120,8 @@
     // if flag then will only return a board location if the cursor is within
     // some distance of the boundaries
 
-    var top = (e.clientY) - $('#board').offset().top;
-    var left = (e.clientX) - $('#board').offset().left;
+    var top = (e.pageY) - $('#board').offset().top;
+    var left = (e.pageX) - $('#board').offset().left;
 
     if (flag) {
       var topBorder = ~~(top / 90) * 90;
@@ -220,8 +220,8 @@
     this.containSelectedOrb(e);
     this.detectNewPosition(e);
 
-    this.$selectedOrb.css('left', e.clientX - 45 + 'px');
-    this.$selectedOrb.css('top', e.clientY - 45 + 'px');
+    this.$selectedOrb.css('left', e.pageX - 45 + 'px');
+    this.$selectedOrb.css('top', e.pageY - 45 + 'px');
   };
 
   Game.prototype.mouseup = function () {
@@ -271,8 +271,8 @@
     var src = $(e.target).parent().find('img').attr('src');
     this.$selectedOrb = $('<img class="orb">').attr('src', src).attr('id', 'drag');
     this.$selectedOrb.css('position', 'absolute');
-    this.$selectedOrb.css('left', e.clientX - 45 + 'px');
-    this.$selectedOrb.css('top', e.clientY - 45 + 'px');
+    this.$selectedOrb.css('top', e.pageY - 45 + 'px');
+    this.$selectedOrb.css('left', e.pageX - 45 + 'px');
     $('body').append(this.$selectedOrb);
   };
 
