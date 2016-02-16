@@ -7,7 +7,6 @@
     this.board = board;
 
     this.$orb = $('<div class="orb">');
-    this.$orb.append($('<div class="swap-region">'));
     var $image = $('<img>').attr('src', Orb.colorUrls[this.color]);
     this.$orb.append($image);
   }
