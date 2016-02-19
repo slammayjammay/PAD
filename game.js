@@ -1,26 +1,8 @@
 (function  () {
-  window.Game = function () {
-    this.board = [];
-    for (var i = 0; i < 10; i++) {
-      this.board.push([]);
-    }
-
-    $('#board').on('mousedown', this.mousedown.bind(this));
-  };
-
-  Game.prototype.containSelectedOrb = function (e) {
-    if (e.clientX < $('#board').offset().left + 45) {
-      e.clientX = $('#board').offset().left + 45;
-    }
-    if (e.clientX > $('#board').offset().left + $('#board').width() - 45) {
-      e.clientX = $('#board').offset().left + $('#board').width() - 45;
-    }
-    if (e.clientY < $('#board').offset().top + 45) {
-      e.clientY = $('#board').offset().top + 45;
-    }
-    if (e.clientY > $('#board').offset().top + $('#board').height() - 45) {
-      e.clientY = $('#board').offset().top + $('#board').height() - 45;
-    }
+  window.Game = function Game (board) {
+    this.board = board;
+    board.populate();
+    this.mouseEventsEnable();
   };
 
   Game.prototype.createSkyfallOrb = function (pos) {
@@ -34,106 +16,12 @@
     }
   };
 
-  Game.prototype.detectNewPosition = function (e) {
-    var newPos = this.getBoardLocation(e, true);
-    if (!newPos) return;
-
-    if (this.currentPos[0] !== newPos[0] || this.currentPos[1] !== newPos[1]) {
-      this.swapOrbs(this.currentPos, newPos);
-      this.currentPos = newPos;
-    }
+  Game.prototype.mouseEventsDisable = function () {
+    this.board.mouseEventsDisable();
   };
 
-  Game.prototype.ensureNoMatches = function () {
-    var matches = this.getAllMatches();
-    while (matches.length > 0) {
-      for (var i = 0; i < matches.length; i++) {
-        matches[i].randomize();
-      }
-      matches = this.getAllMatches();
-    }
-  };
-
-  Game.prototype.findHorizontalMatches = function () {
-    var matches = [];
-    for (var i = 0; i < 5; i++) {
-      for (var j = 0; j < 4; j++) {
-        var color = this.board[i][j].color;
-        var k = 1;
-        matchLength = 1;
-        while (this.board[i][j + k].color === color) {
-          matchLength += 1;
-          k += 1;
-          if (!this.board[i][j + k]) break;
-        }
-        if (matchLength >= 3) {
-          if (!matches[color]) matches[color] = [];
-
-          var orbs = [];
-          for (var l = 0; l < k; l++) {
-            orbs.push(this.board[i][j + l]);
-          }
-          matches.push(new Match(orbs));
-          j = j + k - 1;
-        }
-      }
-    }
-    return matches;
-  };
-
-  Game.prototype.findVerticalMatches = function () {
-    var matches = [];
-    for (var j = 0; j < 6; j++) {
-      for (var i = 0; i < 3; i++) {
-        var color = this.board[i][j].color;
-        var k = 1;
-        matchLength = 1;
-        while (this.board[i + k][j].color === color) {
-          matchLength += 1;
-          k += 1;
-          if (!this.board[i + k][j]) break;
-        }
-        if (matchLength >= 3) {
-          if (!matches[color]) matches[color] = [];
-
-          var orbs = [];
-          for (var l = 0; l < k; l++) {
-            orbs.push(this.board[i + l][j]);
-          }
-          matches.push(new Match(orbs));
-          i = i + k - 1;
-        }
-      }
-    }
-    return matches;
-  };
-
-  Game.prototype.getAllMatches = function () {
-    var horizontal = this.findHorizontalMatches();
-    var vertical = this.findVerticalMatches();
-    var allMatches = horizontal.concat(vertical);
-
-    return this.mergeMatches(allMatches);
-  };
-
-  Game.prototype.getBoardLocation = function (e, flag) {
-    // if flag then will only return a board location if the cursor is within
-    // some distance of the boundaries
-
-    var top = (e.pageY) - $('#board').offset().top;
-    var left = (e.pageX) - $('#board').offset().left;
-
-    if (flag) {
-      var topBorder = ~~(top / 90) * 90;
-      var bottomBorder = topBorder + 90;
-      var leftBorder = ~~(left / 90) * 90;
-      var rightBorder = leftBorder + 90;
-
-      if (top - topBorder < 5 || Math.abs(top - bottomBorder) < 5) return;
-      if (left - leftBorder < 5 || Math.abs(left - rightBorder) < 5) return;
-    }
-
-    return [4 - ~~(top / 90), ~~(left / 90)];
+  Game.prototype.mouseEventsEnable = function () {
+    this.board.mouseEventsEnable();
   };
 
   Game.prototype.getEmpties = function () {
@@ -175,107 +63,6 @@
     }
   };
 
-  Game.prototype.match = function () {
-    var allMatches = this.getAllMatches();
-    this.removeMatches(allMatches);
-  };
-
-  Game.prototype.mergeMatches = function (allMatches) {
-    var connectedIndices = [];
-    for (var i = 0; i < allMatches.length; i++) {
-      for (var j = i + 1; j < allMatches.length; j++) {
-        if (allMatches[i].isConnected(allMatches[j])) {
-          if (connectedIndices.indexOf(i) < 0) connectedIndices.push(i);
-          if (connectedIndices.indexOf(j) < 0) connectedIndices.push(j);
-        }
-      }
-    }
-
-    var baseMatch = allMatches[connectedIndices[0]];
-    for (var i = 1; i < connectedIndices.length; i++) {
-      baseMatch.merge(allMatches[connectedIndices[i]]);
-      delete allMatches[connectedIndices[i]];
-    }
-
-    allMatches = allMatches.filter(function (el) {
-      return el != undefined;
-    });
-    return allMatches;
-  };
-
-  Game.prototype.mousedown = function (e) {
-    e.preventDefault();
-    $(window).on('mousemove', this.mousemove.bind(this));
-
-    this.showSelectedOrb(e);
-    this.currentPos = this.getBoardLocation(e);
-    this.board[this.currentPos[0]][this.currentPos[1]].click();
-
-    $(window).one('mouseup', function () {
-      this.mouseup();
-    }.bind(this));
-  };
-
-  Game.prototype.mousemove = function (e) {
-    this.containSelectedOrb(e);
-    this.detectNewPosition(e);
-
-    this.$selectedOrb.css('left', e.pageX - 45 + 'px');
-    this.$selectedOrb.css('top', e.pageY - 45 + 'px');
-  };
-
-  Game.prototype.mouseup = function () {
-    $(window).off('mousemove');
-    $('#drag').remove();
-    $('.swap-region').unbind('mouseenter');
-    this.board[this.currentPos[0]][this.currentPos[1]].release();
-    this.removeSelectedOrb();
-    this.match();
-  };
-
-  Game.prototype.populateBoard = function () {
-    for (var i = 0; i < 6; i++) {
-      for (var j = 0; j < 5; j++) {
-        var orb = Orb.random([j, i], this.board);
-        orb.addToBoard();
-      }
-    }
-
-    this.ensureNoMatches();
-  };
-
-  Game.prototype.removeMatches = function (allMatches) {
-    var firstMatch = allMatches.pop();
-    if (firstMatch) {
-      firstMatch.remove();
-    } else {
-      return;
-    }
-
-    var id = setInterval(function () {
-      var match = allMatches.pop();
-      if (match) {
-        match.remove();
-      } else {
-        clearInterval(id);
-        this.skyfall();
-      }
-    }.bind(this), 500);
-  };
-
-  Game.prototype.removeSelectedOrb = function () {
-    this.$selectedOrb.remove();
-  };
-
-  Game.prototype.showSelectedOrb = function (e) {
-    var src = $(e.target).parent().find('img').attr('src');
-    this.$selectedOrb = $('<img class="orb">').attr('src', src).attr('id', 'drag');
-    this.$selectedOrb.css('position', 'absolute');
-    this.$selectedOrb.css('top', e.pageY - 45 + 'px');
-    this.$selectedOrb.css('left', e.pageX - 45 + 'px');
-    $('body').append(this.$selectedOrb);
-  };
-
   Game.prototype.skyfall = function () {
     var empties = this.getEmpties();
 
@@ -286,16 +73,5 @@
     setTimeout(function () {
       this.gravity(empties);
     }.bind(this), 100);
-  };
-
-  Game.prototype.swapOrbs = function (currentPos, nextPos) {
-    var orb1 = this.board[currentPos[0]][currentPos[1]];
-    var orb2 = this.board[nextPos[0]][nextPos[1]];
-
-    this.board[currentPos[0]][currentPos[1]] = orb2;
-    this.board[nextPos[0]][nextPos[1]] = orb1;
-
-    orb1.setPos(nextPos);
-    orb2.setPos(currentPos);
   };
 })();
