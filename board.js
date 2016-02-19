@@ -84,6 +84,19 @@
     return [4 - ~~(top / 90), ~~(left / 90)];
   };
 
+  Board.prototype.getEmpties = function () {
+    var empties = [];
+
+    for (var i = 0; i < 5; i++) {
+      for (var j = 0; j < 6; j++) {
+        if (!this.board[i][j]) {
+          empties.push([i, j]);
+        }
+      }
+    }
+    return empties;
+  };
+
   Board.prototype.getMatches = function () {
     // reset orbs for error handling. go through all orbs, find the matches for
     // each, and push it into totalMatches. skip orbs that are already in a
@@ -118,6 +131,15 @@
     if (!match) return false;
 
     return this.extendMatch(match);
+  };
+
+  Board.prototype.getOrbsAbovePos = function (pos) {
+    var orbs = [];
+    for (var i = 1; pos[0] + i < 10; i++) {
+      var orb = this.board[pos[0] + i][pos[1]];
+      if (orb) orbs.push(orb);
+    }
+    return orbs;
   };
 
   Board.prototype.extendMatch = function (matchOrbs) {
