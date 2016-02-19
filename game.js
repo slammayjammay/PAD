@@ -58,6 +58,23 @@
     this.$hoverOrb.css('left', e.pageX - 45 + 'px');
   };
 
+  Game.prototype.match = function () {
+    var matches = this.board.getMatches();
+    var firstMatch = matches.pop();
+    if (!firstMatch) return;
+
+    firstMatch.remove();
+    var id = setInterval(function () {
+      var match = matches.pop();
+      if (match) {
+        match.remove();
+      } else {
+        clearInterval(id);
+        // this.skyfall();
+      }
+    }.bind(this), 500);
+  };
+
   Game.prototype.mousedown = function (e) {
     e.preventDefault();
     $(window).on('mousemove', this.mousemove.bind(this));
@@ -92,7 +109,7 @@
     $(window).off('mousemove');
     this.$hoverOrb && this.$hoverOrb.remove();
     this.board.orbAtPosition(this.currentPos).release();
-    // this.match();
+    this.match();
   };
 
   Game.prototype.getEmpties = function () {

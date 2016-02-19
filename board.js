@@ -185,23 +185,6 @@
     this.board[orb.pos[0]][orb.pos[1]] = undefined;
   };
 
-  Board.prototype.removeMatches = function (matches) {
-    var firstMatch = matches.pop();
-    if (!firstMatch) return;
-
-    firstMatch.remove();
-
-    var id = setInterval(function () {
-      var match = matches.pop();
-      if (match) {
-        match.remove();
-      } else {
-        clearInterval(id);
-        // this.skyfall();
-      }
-    }.bind(this), 500);
-  };
-
   Board.prototype.resetOrbs = function () {
     for (var i = 0; i < 5; i++) {
       for (var j = 0; j < 6; j++) {
