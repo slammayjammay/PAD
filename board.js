@@ -64,35 +64,6 @@
     }
   };
 
-  Board.prototype.getAllMatches = function () {
-    this.resetOrbs();
-    // STEPS:
-    // 1: go through all orbs on board. if it we've already created a new Match
-    //    for this orb, skip it (there's no need to do it again)
-    // 2: if this orb matches with other orbs, create a new Match and add it to
-    //    totalMatches
-    // 3: Edge case: go through all matches of the same color and check if any
-    //    of their orbs are adjacent
-
-    var totalMatches = [];
-
-    for (var i = 0; i < 5; i++) {
-      for (var j = 0; j < 6; j++) {
-        // if current orb is already in a match or not in one, go to next orb
-        var orb = this.orbAtPosition(i ,j);
-        if (orb.match) continue;
-
-        var currentMatch = this.getMatchesForOrb(orb);
-        if (currentMatch) {
-          totalMatches.push(currentMatch);
-        }
-      }
-    }
-
-    this.checkMatchConnections(totalMatches);
-    return totalMatches;
-  };
-
   Board.prototype.getBoardLocation = function (e, flag) {
     // a true flag allows for diagonal swaps. it will only return a board
     // location if the cursor is within some distance of the slot boundaries.
@@ -113,6 +84,30 @@
     return [4 - ~~(top / 90), ~~(left / 90)];
   };
 
+  Board.prototype.getMatches = function () {
+    // reset orbs for error handling. go through all orbs, find the matches for
+    // each, and push it into totalMatches. skip orbs that are already in a
+    // match.
+
+    this.resetOrbs();
+    var totalMatches = [];
+
+    for (var i = 0; i < 5; i++) {
+      for (var j = 0; j < 6; j++) {
+        var orb = this.orbAtPosition(i ,j);
+        if (orb.match) continue;
+
+        var currentMatch = this.getMatchesForOrb(orb);
+        if (currentMatch) {
+          totalMatches.push(currentMatch);
+        }
+      }
+    }
+
+    this.checkMatchConnections(totalMatches);
+    return totalMatches;
+  };
+
   Board.prototype.getMatchesForOrb = function (orb) {
     // first check if this orb is in a horizontal match. if yes, there's no need
     // to check for a possible vertical match. extendMatch() will do that. if no,
@@ -125,12 +120,9 @@
     return this.extendMatch(match);
   };
 
-  Board.prototype.match = function () {
-    var matches = this.getAllMatches();
-    this.removeMatches(matches);
-  };
-
   Board.prototype.extendMatch = function (matchOrbs) {
+    // checks for all possible orbs that are also connected to this match
+
     match = new Match(this, matchOrbs);
 
     var queue = [];
