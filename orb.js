@@ -1,15 +1,10 @@
 (function () {
-  window.Orb = function (color, pos, board) {
+  window.Orb = function Orb (color) {
     this.imageWidth = 90;
-
     this.color = color;
-    this.pos = pos;
-    this.board = board;
 
-    this.$orb = $('<div class="orb">');
-    var $image = $('<img>').attr('src', Orb.colorUrls[this.color]);
-    this.$orb.append($image);
-  }
+    this.$el = $('<img class="orb">').attr('src', Orb.colorUrls[this.color]);
+  };
 
   Orb.colorUrls = {
     'r': 'http://pad.dawnglare.com/Red.png',
@@ -20,78 +15,64 @@
     'h': 'http://pad.dawnglare.com/Heart.png'
   };
 
-  Orb.random = function (pos, board) {
+  Orb.random = function () {
     var colors = Object.keys(Orb.colorUrls);
     var randIndex = ~~(Math.random() * colors.length);
-    return new Orb(colors[randIndex], pos, board);
+    return new Orb(colors[randIndex]);
   };
 
   Orb.skyfall = function (pos, board) {
     var colors = Object.keys(Orb.colorUrls);
     var randIndex = ~~(Math.random() * colors.length);
     var orb = new Orb(colors[randIndex], pos, board);
-    orb.$orb.addClass('skyfall');
+    orb.$el.addClass('skyfall');
     return orb;
   };
 
-  Orb.prototype.addToBoard = function () {
-    this.board[this.pos[0]][this.pos[1]] = this;
+  Orb.prototype.addToBoard = function ($boardEl) {
+    this.$el.css('bottom', this.imageWidth * this.pos[0] + 'px');
+    this.$el.css('left', this.imageWidth * this.pos[1] + 'px');
+    $boardEl.append(this.$el);
+  };
 
-    this.$orb.css('bottom', this.imageWidth * this.pos[0] + 'px');
-    this.$orb.css('left', this.imageWidth * this.pos[1] + 'px');
-    $('#board').append(this.$orb);
+  Orb.prototype.setColor = function (color) {
+    this.color = color;
+    this.$el.attr('src', Orb.colorUrls[color]);
   };
 
   Orb.prototype.click = function () {
-    this.$orb.attr('id', 'clicked');
+    this.$el.attr('id', 'clicked');
   };
 
   Orb.prototype.fall = function () {
-    this.$orb.addClass('gravity');
+    this.$el.addClass('gravity');
 
     var newPos = [this.pos[0] - 1, this.pos[1]];
-    this.updatePos(newPos);
-  };
-
-  Orb.prototype.isSameAs = function (orb2) {
-    if (this.pos[0] === orb2.pos[0] && this.pos[1] === orb2.pos[1]) {
-      return true;
-    }
+    this.updatePosition(newPos);
   };
 
   Orb.prototype.randomizeColor = function () {
     var colors = Object.keys(Orb.colorUrls);
     var randIndex = ~~(Math.random() * colors.length);
     this.color = colors[randIndex];
-    this.$orb.find('img').attr('src', Orb.colorUrls[this.color]);
+    this.$el.find('img').attr('src', Orb.colorUrls[this.color]);
   };
 
   Orb.prototype.release = function () {
-    this.$orb.removeAttr('id');
+    this.$el.removeAttr('id');
   };
 
   Orb.prototype.remove = function () {
-    this.board[this.pos[0]][this.pos[1]] = undefined;
-    this.$orb.addClass('matched');
-    this.$orb.one('transitionend', function () {
-      this.$orb.remove();
+    this.$el.addClass('matched');
+    this.$el.one('transitionend', function () {
+      this.$el.remove();
     }.bind(this));
   };
 
-  Orb.prototype.setPos = function (newPos) {
+  Orb.prototype.updatePosition = function (newPos) {
     this.pos = newPos;
-    this.board[newPos[0]][newPos[1]] = this;
 
-    this.$orb.css('bottom', this.imageWidth * this.pos[0] + 'px');
-    this.$orb.css('left', this.imageWidth * this.pos[1] + 'px');
-  };
-
-  Orb.prototype.updatePos = function (newPos) {
-    this.board[this.pos[0]][this.pos[1]] = undefined;
-    this.pos = newPos;
-    this.board[newPos[0]][newPos[1]] = this;
-
-    this.$orb.css('bottom', this.imageWidth * this.pos[0] + 'px');
-    this.$orb.css('left', this.imageWidth * this.pos[1] + 'px');
+    this.$el.css('bottom', this.imageWidth * this.pos[0] + 'px');
+    this.$el.css('left', this.imageWidth * this.pos[1] + 'px');
   };
 })();
