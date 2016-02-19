@@ -5,17 +5,23 @@
     <link rel=StyleSheet href="style.css" type="text/css">
 		<script type="application/javascript" src="jquery-2.1.4.min.js"></script>
 		<script type="application/javascript" src="game.js"></script>
+		<script type="application/javascript" src="board.js"></script>
 		<script type="application/javascript" src="orb.js"></script>
 		<script type="application/javascript" src="match.js"></script>
+		<script type="application/javascript" src="painter.js"></script>
 	</head>
 	<body>
+		<div id="paint">TURN PAINTER ON</div>
+
     <div id="game">
       <div id="board"></div>
     </div>
 
     <script>
-			var game = new Game();
-			game.populateBoard();
+			var game = new Game(new Board($('#board')));
+			var painter = new Painter($('#paint'), game);
+
+			$('#paint').click(painter.toggle.bind(painter));
     </script>
 	</body>
 </html>
