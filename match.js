@@ -1,15 +1,39 @@
 (function () {
-  window.Match = function (orbs) {
-    this.orbs = orbs;
+  window.Match = function Match (board, orbs) {
+    this.board = board;
+    this.orbs = [];
     this.color = orbs[0].color;
-    this.length = orbs.length;
+
+    this.add(orbs);
+  };
+
+  Match.prototype.add = function (orb) {
+    if (!orb) return;
+
+    if (orb.constructor.name === 'Array') {
+      this.addOrbs(orb);
+    } else if (orb.constructor.name === 'Orb') {
+      if (this.orbs.indexOf(orb) < 0) {
+        this.orbs.push(orb);
+        orb.match = this;
+      }
+    }
+  };
+
+  Match.prototype.addOrbs = function (orbs) {
+    for (var i = 0; i < orbs.length; i++) {
+      if (this.orbs.indexOf(orbs[i]) < 0) {
+        orbs[i].match = this;
+        this.orbs.push(orbs[i]);
+      }
+    }
   };
 
   Match.prototype.isConnected = function (match2) {
-    if (this.color !== match2.color) return;
+    if (this.color !== match2.color) return false;
 
-    for (var i = 0; i < this.length; i++) {
-      for (var j = 0; j < match2.length; j++) {
+    for (var i = 0; i < this.orbs.length; i++) {
+      for (var j = 0; j < match2.orbs.length; j++) {
         if (this.orbsConnectedOrSame(this.orbs[i], match2.orbs[j])) {
           return true;
         }
@@ -19,16 +43,9 @@
 
   Match.prototype.merge = function (match2) {
     for (var i = 0; i < match2.orbs.length; i++) {
-      for (var j = 0; j < this.orbs.length; j++) {
-        if (this.orbs[j].isSameAs(match2.orbs[i])) {
-          delete match2.orbs[i];
-          break;
-        }
+      if (this.orbs.indexOf(match2.orbs[i]) < 0) {
+        this.add(match2.orbs[i]);
       }
-    }
-
-    for (var i = 0; i < match2.orbs.length; i++) {
-      if (match2.orbs[i] != undefined) this.orbs.push(match2.orbs[i]);
     }
   };
 
@@ -60,7 +77,14 @@
 
   Match.prototype.remove = function () {
     this.orbs.forEach(function (orb) {
+      this.board.removeOrb(orb);
       orb.remove();
-    });
+    }.bind(this));
+  };
+
+  Match.prototype.removeOrb = function (orb) {
+    var idx = this.orbs.indexOf(orb);
+    var removedOrb = this.orbs.splice(idx, 1);
+    removedOrb.match = undefined;
   };
 })();
