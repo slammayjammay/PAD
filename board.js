@@ -64,17 +64,6 @@
     }
   };
 
-  Board.prototype.detectOrbSwap = function (e) {
-    var newPos = this.getBoardLocation(e, true);
-    if (!newPos) return;
-
-    if (this.currentPos[0] !== newPos[0] || this.currentPos[1] !== newPos[1]) {
-      var currentOrb = this.orbAtPosition(this.currentPos);
-      var newOrb = this.orbAtPosition(newPos);
-      this.swapOrbs(currentOrb, newOrb);
-    }
-  };
-
   Board.prototype.getAllMatches = function () {
     this.resetOrbs();
     // STEPS:
@@ -175,68 +164,8 @@
     return match;
   };
 
-  Board.prototype.mouseEventsEnable = function () {
-    this.$el.on('mousedown', this.mousedown.bind(this));
-  };
-
-  Board.prototype.mouseEventsDisable = function () {
-    this.$el.off('mousedown');
-  };
-
   Board.prototype.ensureNoMatches = function () {
 
-  };
-
-  Board.prototype.hoverOrbContain = function (e) {
-    if (e.pageX < this.$el.offset().left + 45) {
-      e.pageX = this.$el.offset().left + 45;
-    } else if (e.pageX > this.$el.offset().left + this.$el.width() - 45) {
-      e.pageX = this.$el.offset().left + this.$el.width() - 45;
-    }
-
-    if (e.pageY < this.$el.offset().top + 45) {
-      e.pageY = this.$el.offset().top + 45;
-    } else if (e.pageY > this.$el.offset().top + this.$el.height() - 45) {
-      e.pageY = this.$el.offset().top + this.$el.height() - 45;
-    }
-  };
-
-  Board.prototype.hoverOrbShow = function (e) {
-    var src = $(e.target).attr('src');
-    this.$hoverOrb = $('<img class="orb">').attr('src', src)
-    this.$hoverOrb.attr('id', 'drag');
-
-    this.hoverOrbUpdate(e);
-    $('body').append(this.$hoverOrb);
-  };
-
-  Board.prototype.hoverOrbUpdate = function (e) {
-    this.hoverOrbContain(e);
-    this.$hoverOrb.css('top', e.pageY - 45 + 'px');
-    this.$hoverOrb.css('left', e.pageX - 45 + 'px');
-  };
-
-  Board.prototype.mousedown = function (e) {
-    e.preventDefault();
-    $(window).on('mousemove', this.mousemove.bind(this));
-
-    this.hoverOrbShow(e);
-    this.currentPos = this.getBoardLocation(e);
-    this.orbAtPosition(this.currentPos).click();
-
-    $(window).one('mouseup', this.mouseup.bind(this));
-  };
-
-  Board.prototype.mousemove = function (e) {
-    this.detectOrbSwap(e);
-    this.hoverOrbUpdate(e);
-  };
-
-  Board.prototype.mouseup = function () {
-    $(window).off('mousemove');
-    this.$hoverOrb.remove();
-    this.orbAtPosition(this.currentPos).release();
-    this.match();
   };
 
   Board.prototype.orbAtPosition = function (pos, pos2) {
@@ -297,7 +226,5 @@
     this.board[newPos[0]][newPos[1]] = currentOrb;
     currentOrb.updatePosition(newPos);
     newOrb.updatePosition(currentPos);
-
-    this.currentPos = newPos;
   };
 })();
