@@ -1,3 +1,20 @@
+#paint {
+  display: inline-block;
+  padding: 10px;
+  font-size: 26px;
+  border: 1px solid black;
+}
+
+#paint:hover {
+  cursor: pointer;
+}
+
+img.painter-image {
+  position: absolute;
+  pointer-events: none;
+  opacity: .5;
+}
+
 #game {
   margin: auto;
   width: 540px;
@@ -26,6 +43,7 @@
 }
 
 .orb#drag {
+  position: absolute;
   pointer-events: none;
   opacity: .8;
 }
@@ -41,9 +59,4 @@
 
 .orb.skyfall {
   opacity: 0;
-}
-
-.orb img {
-  width: 100%;
-  height: auto;
 }
