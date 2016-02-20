@@ -35,7 +35,7 @@
   Game.prototype.hoverOrbShow = function (e) {
     var src = $(e.target).attr('src');
     this.$hoverOrb = $('<img class="orb">').attr('src', src)
-    this.$hoverOrb.attr('id', 'drag');
+    this.$hoverOrb.addClass('hover-orb');
 
     this.hoverOrbUpdate(e);
     $('body').append(this.$hoverOrb);
@@ -76,21 +76,17 @@
   };
 
   Game.prototype.mouseEventsDisable = function () {
-    this.board.mouseEventsDisable();
+    this.board.$el.off('mousedown');
   };
 
   Game.prototype.mouseEventsEnable = function () {
     this.board.$el.on('mousedown', this.mousedown.bind(this));
   };
 
-  Game.prototype.mouseEventsDisable = function () {
-    this.board.$el.off('mousedown');
-  };
-
   Game.prototype.mousemove = function (e) {
     this.hoverOrbUpdate(e);
 
-    var newPos = this.board.getBoardLocation(e);
+    var newPos = this.board.getBoardLocation(e, true);
     this.detectOrbSwap(newPos);
   };
 
