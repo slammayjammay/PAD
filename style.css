@@ -4,10 +4,13 @@
 }
 
 #paint .button {
-  display: inline-block;
+  margin: auto;
+  position: relative;
+  z-index: 10;
   padding: 10px;
-  font-size: 26px;
   border: 1px solid black;
+  font-size: 26px;
+  text-align: center;
 }
 
 #paint .button, #paint .orb-paint:hover {
@@ -17,13 +20,33 @@
 img.hover-orb {
   transition: none;
   position: absolute;
+  z-index: 10;
   pointer-events: none;
   opacity: .5;
 }
 
+ul#paint-colors.hidden {
+  opacity: 0;
+  margin-top: -100px;
+}
+
 ul#paint-colors {
+  margin-top: 20px;
+  opacity: 1;
+  transition: 500ms;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   list-style-type: none;
   padding: 0px;
+}
+
+ul#paint-colors:after {
+  display: block;
+  clear: both;
+  content: '';
 }
 
 ul#paint-colors li {
