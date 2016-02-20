@@ -2,9 +2,10 @@
   window.Match = function Match (board, orbs) {
     this.board = board;
     this.orbs = [];
-    this.color = orbs[0].color;
-
-    this.add(orbs);
+    if (orbs) {
+      this.color = orbs[0].color;
+      this.add(orbs);
+    }
   };
 
   Match.prototype.add = function (orb) {
