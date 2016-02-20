@@ -38,8 +38,7 @@
       }
     }
 
-    // TODO: return a Match object
-    return matchOrbs.length >= 3 ? matchOrbs : false;
+    return matchOrbs.length >= 3 ? new Match(this, matchOrbs) : false;
   };
 
   Board.prototype.checkMatchConnections = function (totalMatches) {
@@ -102,19 +101,18 @@
     }
   };
 
-  Board.prototype.extendMatch = function (matchOrbs) {
+  Board.prototype.extendMatch = function (match) {
     // checks for all possible orbs that are also connected to this match
-    match = new Match(this, matchOrbs);
 
-    var queue = [];
-    // if dirToCheck is true then orbs are aligned horizontally
     var dirToCheck = match.orbs[1].pos[0] - match.orbs[0].pos[0] === 0;
     if (dirToCheck) {
+      // if dirToCheck is true then this match is aligned horizontally
       dirToCheck = 'v';
     } else {
       dirToCheck = 'h';
     }
 
+    var queue = [];
     for (var i = 0; i < match.orbs.length; i++) {
       queue.push({ orb: match.orbs[i], dirToCheck: dirToCheck });
     }
@@ -124,14 +122,14 @@
       var newMatch = this.checkForMatch(current.orb, current.dirToCheck);
       if (!newMatch) continue;
 
-      for (var i = 0; i < newMatch.length; i++) {
-        var newOrb = newMatch[i];
+      for (var i = 0; i < newMatch.orbs.length; i++) {
+        var newOrb = newMatch.orbs[i];
         if (newOrb === current.orb || newOrb.match === match) continue;
 
         var newDir = current.dirToCheck === 'h' ? 'v' : 'h';
         queue.push({ orb: newOrb, dirToCheck: newDir });
       }
-      match.add(newMatch);
+      match.merge(newMatch);
     }
 
     return match;
@@ -243,7 +241,7 @@
       }
     }
 
-    this.ensureNoMatches();
+    // this.ensureNoMatches();
   };
 
   Board.prototype.removeOrb = function (orb) {
