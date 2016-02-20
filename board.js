@@ -7,7 +7,7 @@
     }
   };
 
-  Board.prototype.addToBoard = function (orb, pos) {
+  Board.prototype.addOrb = function (orb, pos) {
     this.board[pos[0]][pos[1]] = orb;
     orb.updatePosition(pos);
     orb.addToBoard(this.$el);
@@ -62,6 +62,69 @@
         }
       }
     }
+  };
+
+  Board.prototype.createSkyfallOrbs = function (empties) {
+    // for each position in the given list of empty board slots, create a
+    // skyfall orb. add it to the board in the correct column, and at least one
+    // row above the board height
+
+    for (var i = 0; i < empties.length; i++) {
+      var col = empties[i][1];
+
+      for (var height = 0; height < 5; height++) {
+        var pos = [5 + height, col];
+        if (!this.orbAtPosition(pos)) {
+          var orb = new Orb.skyfall();
+          this.addOrb(orb, pos);
+          break;
+        }
+      }
+    }
+  };
+
+  Board.prototype.dropOrb = function (orb) {
+    orb.$el.addClass('gravity');
+
+    this.board[orb.pos[0]][orb.pos[1]] = undefined;
+    var newPos = [orb.pos[0] - 1, orb.pos[1]];
+    this.board[newPos[0]][newPos[1]] = orb;
+    orb.updatePosition(newPos);
+  };
+
+  Board.prototype.extendMatch = function (matchOrbs) {
+    // checks for all possible orbs that are also connected to this match
+    match = new Match(this, matchOrbs);
+
+    var queue = [];
+    // if dirToCheck is true then orbs are aligned horizontally
+    var dirToCheck = match.orbs[1].pos[0] - match.orbs[0].pos[0] === 0;
+    if (dirToCheck) {
+      dirToCheck = 'v';
+    } else {
+      dirToCheck = 'h';
+    }
+
+    for (var i = 0; i < match.orbs.length; i++) {
+      queue.push({ orb: match.orbs[i], dirToCheck: dirToCheck });
+    }
+
+    while (queue.length > 0) {
+      var current = queue.shift();
+      var newMatch = this.checkForMatch(current.orb, current.dirToCheck);
+      if (!newMatch) continue;
+
+      for (var i = 0; i < newMatch.length; i++) {
+        var newOrb = newMatch[i];
+        if (newOrb === current.orb || newOrb.match === match) continue;
+
+        var newDir = current.dirToCheck === 'h' ? 'v' : 'h';
+        queue.push({ orb: newOrb, dirToCheck: newDir });
+      }
+      match.add(newMatch);
+    }
+
+    return match;
   };
 
   Board.prototype.getBoardLocation = function (e, flag) {
@@ -142,44 +205,14 @@
     return orbs;
   };
 
-  Board.prototype.extendMatch = function (matchOrbs) {
-    // checks for all possible orbs that are also connected to this match
-
-    match = new Match(this, matchOrbs);
-
-    var queue = [];
-    // if dirToCheck is true then orbs are aligned horizontally
-    var dirToCheck = match.orbs[1].pos[0] - match.orbs[0].pos[0] === 0;
-    if (dirToCheck) {
-      dirToCheck = 'v';
-    } else {
-      dirToCheck = 'h';
+  Board.prototype.gravity = function (empties) {
+    var orbsToFall = [];
+    for (var i = 0; i < empties.length; i++) {
+      orbsToFall = orbsToFall.concat(this.getOrbsAbovePos(empties[i]));
     }
-
-    for (var i = 0; i < match.orbs.length; i++) {
-      queue.push({ orb: match.orbs[i], dirToCheck: dirToCheck });
+    for (var idx = 0; idx < orbsToFall.length; idx++) {
+      this.dropOrb(orbsToFall[idx]);
     }
-
-    while (queue.length > 0) {
-      var current = queue.shift();
-      var newMatch = this.checkForMatch(current.orb, current.dirToCheck);
-      if (!newMatch) continue;
-
-      for (var i = 0; i < newMatch.length; i++) {
-        var newOrb = newMatch[i];
-        if (newOrb === current.orb || newOrb.match === match) continue;
-
-        var newDir = current.dirToCheck === 'h' ? 'v' : 'h';
-        queue.push({ orb: newOrb, dirToCheck: newDir });
-      }
-      match.add(newMatch);
-    }
-
-    return match;
-  };
-
-  Board.prototype.ensureNoMatches = function () {
-
   };
 
   Board.prototype.orbAtPosition = function (pos, pos2) {
@@ -196,11 +229,11 @@
     for (var i = 0; i < 6; i++) {
       for (var j = 0; j < 5; j++) {
         var orb = Orb.random();
-        this.addToBoard(orb, [j, i]);
+        this.addOrb(orb, [j, i]);
       }
     }
 
-    this.ensureNoMatches();
+    // this.ensureNoMatches();
   };
 
   Board.prototype.removeOrb = function (orb) {
@@ -213,6 +246,15 @@
         this.orbAtPosition(i, j).match = undefined;
       }
     }
+  };
+
+  Board.prototype.skyfall = function () {
+    var empties = this.getEmpties();
+    this.createSkyfallOrbs(empties);
+
+    setTimeout(function () {
+      this.gravity(empties);
+    }.bind(this), 100);
   };
 
   Board.prototype.swapOrbs = function (currentOrb, newOrb) {
