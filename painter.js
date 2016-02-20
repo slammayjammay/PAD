@@ -4,8 +4,9 @@
     this.$el = $el;
     this.game = game;
 
-    this.$hoverOrb = $('<img>').addClass('hover-orb');
+    this.$hoverOrb = $('<img>').addClass('orb hover-orb');
     $('body').append(this.$hoverOrb);
+    this.$hoverOrb.hide();
 
     this.displayOptions();
   };
@@ -40,6 +41,11 @@
   };
 
   Painter.prototype.mouseEventsEnable = function () {
+    $('.orb-paint').one('click', function () {
+      this.$hoverOrb.show();
+      $('body').not('#paint .button').css('cursor', 'none');
+    }.bind(this));
+    
     $('.orb-paint').click(this.changeColor.bind(this));
     $('#board').click(this.paintOrb.bind(this));
     $(window).mousemove(this.hoverOrbUpdate.bind(this));
@@ -67,7 +73,6 @@
 
   Painter.prototype.turnOn = function () {
     this.on = true;
-    this.$hoverOrb.show();
     this.$el.find('.button').text('Turn painter off');
     this.$el.find('ul#paint-colors').show();
 
