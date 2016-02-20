@@ -1,18 +1,38 @@
 #paint {
+  float: left;
+  width: 300px;
+}
+
+#paint .button {
   display: inline-block;
   padding: 10px;
   font-size: 26px;
   border: 1px solid black;
 }
 
-#paint:hover {
+#paint .button, #paint .orb-paint:hover {
   cursor: pointer;
 }
 
-img.painter-image {
+img.hover-orb {
+  transition: none;
   position: absolute;
   pointer-events: none;
   opacity: .5;
+}
+
+ul#paint-colors {
+  list-style-type: none;
+  padding: 0px;
+}
+
+ul#paint-colors li {
+  float: left;
+}
+
+li.orb-paint img {
+  width: 80px;
+  height: auto;
 }
 
 #game {
@@ -42,9 +62,7 @@ img.painter-image {
   transition: 600ms;
 }
 
-.orb#drag {
-  position: absolute;
-  pointer-events: none;
+.orb.hover-orb {
   opacity: .8;
 }
 
