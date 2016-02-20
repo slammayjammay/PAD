@@ -92,6 +92,16 @@
     orb.updatePosition(newPos);
   };
 
+  Board.prototype.ensureNoMatches = function () {
+    window.matches = this.getMatches();
+    while (matches.length > 0) {
+      for (var i = 0; i < matches.length; i++) {
+        matches[i].randomize();
+      }
+      matches = this.getMatches();
+    }
+  };
+
   Board.prototype.extendMatch = function (matchOrbs) {
     // checks for all possible orbs that are also connected to this match
     match = new Match(this, matchOrbs);
@@ -233,7 +243,7 @@
       }
     }
 
-    // this.ensureNoMatches();
+    this.ensureNoMatches();
   };
 
   Board.prototype.removeOrb = function (orb) {
