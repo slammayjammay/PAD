@@ -48,7 +48,7 @@
     var colors = Object.keys(Orb.colorUrls);
     var randIndex = ~~(Math.random() * colors.length);
     this.color = colors[randIndex];
-    this.$el.find('img').attr('src', Orb.colorUrls[this.color]);
+    this.$el.attr('src', Orb.colorUrls[this.color]);
   };
 
   Orb.prototype.release = function () {
