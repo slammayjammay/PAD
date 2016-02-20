@@ -4,13 +4,33 @@
     this.$el = $el;
     this.game = game;
 
-    this.$image = $('<img>').addClass('painter-image');
-    $('body').append(this.$image);
+    this.$hoverOrb = $('<img>').addClass('hover-orb');
+    $('body').append(this.$hoverOrb);
+
+    this.displayOptions();
   };
 
-  Painter.prototype.changeColor = function (el) {
-    this.color = $(el.currentTarget).attr('color');
-    this.$image.attr('src', Orb.colorUrls[this.color]);
+  Painter.prototype.changeColor = function (e) {
+    this.color = $(e.currentTarget).find('img').attr('color');
+    this.$hoverOrb.attr('src', Orb.colorUrls[this.color]);
+  };
+
+  Painter.prototype.displayOptions = function () {
+    Object.keys(Orb.colorUrls).forEach(function (color) {
+      var $li = $('<li>').addClass('orb-paint');
+
+      var src = Orb.colorUrls[color];
+      var $orb = $('<img>').attr('src', src);
+      $orb.attr('color', color);
+
+      $li.append($orb);
+      $('#paint-colors').append($li);
+    });
+  };
+
+  Painter.prototype.hoverOrbUpdate = function (e) {
+    this.$hoverOrb.css('top', e.pageY - 45 + 'px');
+    this.$hoverOrb.css('left', e.pageX - 45 + 'px');
   };
 
   Painter.prototype.mouseEventsDisable = function () {
@@ -19,19 +39,10 @@
     $(window).off('mousemove');
   };
 
-  Painter.prototype.displayOptions = function () {
-    Object.keys(Orb.colorUrls).forEach(function (color) {
-      var src = Orb.colorUrls[color];
-      var $orb = $('<img>').attr('src', src).addClass('orb-paint');
-      $orb.attr('color', color);
-      $('#paint').after($orb);
-    });
-  };
-
   Painter.prototype.mouseEventsEnable = function () {
     $('.orb-paint').click(this.changeColor.bind(this));
     $('#board').click(this.paintOrb.bind(this));
-    $(window).mousemove(this.updateImagePos.bind(this));
+    $(window).mousemove(this.hoverOrbUpdate.bind(this));
   };
 
   Painter.prototype.paintOrb = function (e) {
@@ -46,23 +57,21 @@
 
   Painter.prototype.turnOff = function () {
     this.on = false;
-    this.$image.hide();
-    $('.orb-paint').remove();
+    this.$hoverOrb.hide();
+    this.$el.find('.button').text('Turn painter on');
+    this.$el.find('ul#paint-colors').hide();
+
     this.mouseEventsDisable();
     this.game.mouseEventsEnable();
   };
 
   Painter.prototype.turnOn = function () {
     this.on = true;
-    this.$image.show();
-    this.$el.text('TURN PAINTER OFF');
-    this.displayOptions();
+    this.$hoverOrb.show();
+    this.$el.find('.button').text('Turn painter off');
+    this.$el.find('ul#paint-colors').show();
+
     this.game.mouseEventsDisable();
     this.mouseEventsEnable();
-  };
-
-  Painter.prototype.updateImagePos = function (e) {
-    this.$image.css('top', e.pageY - 45 + 'px');
-    this.$image.css('left', e.pageX - 45 + 'px');
   };
 })();
