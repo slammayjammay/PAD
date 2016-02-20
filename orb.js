@@ -21,10 +21,10 @@
     return new Orb(colors[randIndex]);
   };
 
-  Orb.skyfall = function (pos, board) {
+  Orb.skyfall = function () {
     var colors = Object.keys(Orb.colorUrls);
     var randIndex = ~~(Math.random() * colors.length);
-    var orb = new Orb(colors[randIndex], pos, board);
+    var orb = new Orb(colors[randIndex]);
     orb.$el.addClass('skyfall');
     return orb;
   };
@@ -42,13 +42,6 @@
 
   Orb.prototype.click = function () {
     this.$el.attr('id', 'clicked');
-  };
-
-  Orb.prototype.fall = function () {
-    this.$el.addClass('gravity');
-
-    var newPos = [this.pos[0] - 1, this.pos[1]];
-    this.updatePosition(newPos);
   };
 
   Orb.prototype.randomizeColor = function () {
