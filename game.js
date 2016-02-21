@@ -66,13 +66,14 @@
 
   Game.prototype.mousedown = function (e) {
     e.preventDefault();
-    $(window).on('mousemove', this.mousemove.bind(this));
+    this.board.$el.css('cursor', 'none');
+    $(document).on('mousemove', this.mousemove.bind(this));
 
     this.hoverOrbShow(e);
     this.currentPos = this.board.getBoardLocation(e);
     this.board.orbAtPosition(this.currentPos).click();
 
-    $(window).one('mouseup', this.mouseup.bind(this));
+    $(document).one('mouseup', this.mouseup.bind(this));
   };
 
   Game.prototype.mouseEventsDisable = function () {
@@ -91,7 +92,8 @@
   };
 
   Game.prototype.mouseup = function () {
-    $(window).off('mousemove');
+    this.board.$el.css('cursor', 'default');
+    $(document).off('mousemove');
     this.$hoverOrb && this.$hoverOrb.remove();
     this.board.orbAtPosition(this.currentPos).release();
     this.match();
