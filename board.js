@@ -241,7 +241,7 @@
       }
     }
 
-    // this.ensureNoMatches();
+    this.ensureNoMatches();
   };
 
   Board.prototype.removeOrb = function (orb) {
