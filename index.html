@@ -14,7 +14,10 @@
 		<div id="paint">
 			<div class="button">Painter</div>
 
-			<ul id="paint-colors" class="hidden"></ul>
+			<div id="paint-content" class="hidden">
+				<ul id="paint-colors"></ul>
+				<textarea></textarea>
+			</div>
 		</div>
 
     <div id="game">
@@ -22,10 +25,16 @@
     </div>
 
     <script>
-			var game = new Game(new Board($('#board')));
-			var painter = new Painter($('#paint'), game);
+			$(document).ready(function () {
+				var game = new Game(new Board($('#board')));
+				var painter = new Painter($('#paint'), game);
 
-			$('#paint .button').click(painter.toggle.bind(painter));
+				$('#paint .button').click(painter.toggle.bind(painter));
+
+				$(document).mousedown(function (e) {
+		      e.preventDefault();
+		    });
+			});
     </script>
 	</body>
 </html>
