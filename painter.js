@@ -66,7 +66,7 @@
     this.on = false;
     this.$hoverOrb.hide();
     this.$el.find('.button').text('Painter');
-    this.$el.find('ul#paint-colors').addClass('hidden');
+    this.$el.find('#paint-content').addClass('hidden');
 
     this.mouseEventsDisable();
     this.game.mouseEventsEnable();
@@ -75,7 +75,7 @@
   Painter.prototype.turnOn = function () {
     this.on = true;
     this.$el.find('.button').text('Back to game');
-    this.$el.find('ul#paint-colors').removeClass('hidden');
+    this.$el.find('#paint-content').removeClass('hidden');
 
     this.game.mouseEventsDisable();
     this.mouseEventsEnable();
