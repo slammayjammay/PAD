@@ -78,9 +78,13 @@
 
   Game.prototype.mouseEventsDisable = function () {
     this.board.$el.off('mousedown');
+    $(document).off('mousedown');
   };
 
   Game.prototype.mouseEventsEnable = function () {
+    $(document).mousedown(function (e) {
+      e.preventDefault();
+    });
     this.board.$el.on('mousedown', this.mousedown.bind(this));
   };
 
