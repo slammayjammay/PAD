@@ -65,9 +65,11 @@ li.orb-paint img {
 #paint textarea {
   padding-left: 16px;
   width: 200px;
-  height: 170px;
+  height: 177px;
   font-size: 30px;
-  letter-spacing: 16px;
+  letter-spacing: 15px;
+  font-family: monospace;
+  resize: none;
 }
 
 #game {
@@ -91,6 +93,11 @@ li.orb-paint img {
   position: absolute;
   width: 90px;
   height: 90px;
+}
+
+.orb.hidden {
+  opacity: 0;
+  transition: 400ms;
 }
 
 .orb.gravity {
