@@ -1,31 +1,31 @@
 (function () {
-  window.Match = function Match (board, orbs) {
+  window.Match = function Match (board, orbs, flag) {
     this.board = board;
     this.orbs = [];
     if (orbs) {
       this.color = orbs[0].color;
-      this.add(orbs);
+      this.add(orbs, flag);
     }
   };
 
-  Match.prototype.add = function (orb) {
+  Match.prototype.add = function (orb, flag) {
     if (!orb) return;
 
     if (orb.constructor.name === 'Array') {
-      this.addOrbs(orb);
+      this.addOrbs(orb, flag);
     } else if (orb.constructor.name === 'Orb') {
       if (this.orbs.indexOf(orb) < 0) {
         this.orbs.push(orb);
-        orb.match = this;
+        if (flag) orb.match = this;
       }
     }
   };
 
-  Match.prototype.addOrbs = function (orbs) {
+  Match.prototype.addOrbs = function (orbs, flag) {
     for (var i = 0; i < orbs.length; i++) {
       if (this.orbs.indexOf(orbs[i]) < 0) {
-        orbs[i].match = this;
         this.orbs.push(orbs[i]);
+        if (flag) orbs[i].match = this;
       }
     }
   };
@@ -45,7 +45,7 @@
   Match.prototype.merge = function (match2) {
     for (var i = 0; i < match2.orbs.length; i++) {
       if (this.orbs.indexOf(match2.orbs[i]) < 0) {
-        this.add(match2.orbs[i]);
+        this.add(match2.orbs[i], true);
       }
     }
   };
