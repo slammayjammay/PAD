@@ -223,6 +223,14 @@
     }
   };
 
+  Board.prototype.hideOrbs = function () {
+    for (var i = 0; i < 5; i++) {
+      for (var j = 0; j < 6; j++) {
+        this.orbAtPosition(i, j).hide();
+      }
+    }
+  };
+
   Board.prototype.orbAtPosition = function (pos, pos2) {
     if (pos.constructor.name === 'Array') {
       if (!this.board[pos[0]]) return;
