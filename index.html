@@ -25,9 +25,11 @@
     </div>
 
     <script>
+			var game, painter;
+
 			$(document).ready(function () {
-				var game = new Game(new Board($('#board')));
-				var painter = new Painter($('#paint'), game);
+				game = new Game(new Board($('#board')));
+				painter = new Painter($('#paint'), game);
 
 				$('#paint .button').click(painter.toggle.bind(painter));
 			});
