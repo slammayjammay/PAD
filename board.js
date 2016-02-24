@@ -63,6 +63,12 @@
     }
   };
 
+  Board.prototype.clearSkyfallSlots = function () {
+    for (var i = 5; i < 10; i++) {
+      this.board[i].splice(0);
+    }
+  };
+
   Board.prototype.createSkyfallOrbs = function (empties) {
     // for each position in the given list of empty board slots, create a
     // skyfall orb. add it to the board in the correct column, and at least one
@@ -221,6 +227,7 @@
     for (var idx = 0; idx < orbsToFall.length; idx++) {
       this.dropOrb(orbsToFall[idx]);
     }
+    this.clearSkyfallSlots();
   };
 
   Board.prototype.hideOrbs = function () {
