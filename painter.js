@@ -44,20 +44,26 @@
   };
 
   Painter.prototype.keydown = function (e) {
+    if (e.metaKey) return;
+
     var action = Painter.keyCodes[e.keyCode];
+    if (action === 'backspace') {
+      if (e.currentTarget.selectionStart === e.currentTarget.selectionEnd) {
+        e.currentTarget.selectionStart -= 1;
+        e.preventDefault();
+        return;
+      }
+    } else if (!action) {
+      e.preventDefault();
+      return;
+    }
+
     if (Orb.colors[action]) {
       var row = 4 - ~~(e.currentTarget.selectionStart / 6) ;
       var col = e.currentTarget.selectionStart % 6;
       var orb = this.game.board.orbAtPosition(row, col);
 
       orb && orb.setColor(action);
-    } else if (action === 'backspace') {
-      if (e.currentTarget.selectionStart === e.currentTarget.selectionEnd) {
-        e.currentTarget.selectionStart -= 1;
-        e.preventDefault();
-      }
-    } else if (!action) {
-      e.preventDefault();
     }
   };
 
@@ -83,6 +89,7 @@
     $('#board').click(this.paintOrb.bind(this));
 
     $('textarea').keydown(this.keydown.bind(this));
+    $('textarea').on('paste', this.paste.bind(this));
 
     $(window).mousemove(this.hoverOrbUpdate.bind(this));
   };
@@ -91,6 +98,18 @@
     var pos = this.game.board.getBoardLocation(e);
     var orb = this.game.board.orbAtPosition(pos);
     orb.setColor(this.color);
+  };
+
+  Painter.prototype.paste = function (e) {
+    var text = e.originalEvent.clipboardData.getData('text');
+    var currentPos = e.currentTarget.selectionStart;
+    for (var i = 0; i < text.length; i++) {
+      var row = 4 - ~~(currentPos / 6);
+      var col = currentPos % 6;
+      var orb = this.game.board.orbAtPosition(row, col);
+      orb && orb.setColor(text[i]);
+      currentPos += 1;
+    }
   };
 
   Painter.prototype.toggle = function () {
