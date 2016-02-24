@@ -65,6 +65,9 @@
     if (color && Orb.colors[color]) {
       this.color = color;
       this.$el.attr('src', Orb.colors[color]);
+    } else {
+      this.color = 'hidden';
+      this.$el.attr('src', 'http://nontalk.s3.amazonaws.com/black-circle.png');
     }
   };
 
