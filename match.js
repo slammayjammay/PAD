@@ -88,4 +88,11 @@
     var removedOrb = this.orbs.splice(idx, 1);
     removedOrb.match = undefined;
   };
+
+  Match.prototype.setAsParent = function () {
+    // ensure all child orbs' match property refers to this
+    for (var i = 0; i < this.orbs.length; i++) {
+      this.orbs[i].match = this;
+    }
+  };
 })();
