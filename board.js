@@ -110,6 +110,8 @@
   Board.prototype.extendMatch = function (match) {
     // checks for all possible orbs that are also connected to this match
 
+    match.setAsParent();
+    
     var dirToCheck = match.orbs[1].pos[0] - match.orbs[0].pos[0] === 0;
     if (dirToCheck) {
       // if dirToCheck is true then this match is aligned horizontally
