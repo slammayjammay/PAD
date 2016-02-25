@@ -44,7 +44,13 @@
   };
 
   Painter.prototype.keydown = function (e) {
-    if (e.metaKey) return;
+    if (e.metaKey) {
+      if (e.which === 90) {
+        // no undo's
+        e.preventDefault();
+      }
+      return;
+    };
 
     var action = Painter.keyCodes[e.keyCode];
     if (action === 'backspace') {
