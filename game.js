@@ -1,6 +1,7 @@
 (function  () {
   window.Game = function Game (board) {
     this.board = board;
+
     board.populate();
     this.mouseEventsEnable();
   };
@@ -82,9 +83,6 @@
   };
 
   Game.prototype.mouseEventsEnable = function () {
-    $(document).mousedown(function (e) {
-      e.preventDefault();
-    });
     this.board.$el.on('mousedown', this.mousedown.bind(this));
   };
 
