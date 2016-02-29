@@ -12,11 +12,40 @@
 	</head>
 	<body>
 		<div id="paint">
-			<div class="button">Painter</div>
+			<div>Painter</div>
 
-			<div id="paint-content" class="hidden">
-				<ul id="paint-colors"></ul>
+			<div id="paint-content">
+
+				<ul id="paint-colors">
+					<li class="orb-paint">
+						<img src="http://pad.dawnglare.com/Red.png" color="r"/>
+					</li>
+					<li class="orb-paint">
+						<img src="http://pad.dawnglare.com/Blue.png" color="b"/>
+					</li>
+					<li class="orb-paint">
+						<img src="http://pad.dawnglare.com/Green.png" color="g"/>
+					</li>
+					<li class="orb-paint">
+						<img src="http://pad.dawnglare.com/Light.png" color="l"/>
+					</li>
+					<li class="orb-paint">
+						<img src="http://pad.dawnglare.com/Dark.png" color="d"/>
+					</li>
+					<li id="heart" class="orb-paint">
+						<img src="http://pad.dawnglare.com/Heart.png" color="h"/>
+					</li>
+				</ul>
+
 				<textarea maxlength=30></textarea>
+				<div id="apply">
+					<div class="button">
+						<div class="button transition static"></div>
+						<div class="button transition hover"></div>
+						<div class="button transition click"></div>
+						Apply
+					</div>
+				</div>
 			</div>
 		</div>
 
@@ -30,8 +59,6 @@
 			$(document).ready(function () {
 				game = new Game(new Board($('#board')));
 				painter = new Painter($('#paint'), game);
-
-				$('#paint .button').click(painter.toggle.bind(painter));
 			});
     </script>
 	</body>
