@@ -67,7 +67,6 @@
 
   Game.prototype.mousedown = function (e) {
     e.preventDefault();
-    this.board.$el.css('cursor', 'none');
     $(document).on('mousemove', this.mousemove.bind(this));
 
     this.hoverOrbShow(e);
@@ -94,7 +93,6 @@
   };
 
   Game.prototype.mouseup = function () {
-    this.board.$el.css('cursor', 'default');
     $(document).off('mousemove');
     this.$hoverOrb && this.$hoverOrb.remove();
     this.board.orbAtPosition(this.currentPos).release();
