@@ -1,6 +1,5 @@
 (function () {
   window.Painter = function Painter ($el, game) {
-    this.on = false;
     this.$el = $el;
     this.game = game;
 
@@ -8,7 +7,7 @@
     $('body').append(this.$hoverOrb);
     this.$hoverOrb.hide();
 
-    this.displayOptions();
+    this.mouseEventsEnable();
   };
 
   Painter.keyCodes = {
@@ -25,22 +24,30 @@
     82: 'r'
   };
 
+  Painter.prototype.apply = function (e) {
+    var text = $('textarea').val();
+    if (this.validText(text)) {
+      this.applyText(text);
+    }
+  };
+
+  Painter.prototype.applyText = function (text, currentPos) {
+    if (!currentPos) {
+      currentPos = 0;
+    }
+
+    for (var i = 0; i < text.length; i++) {
+      var row = 4 - ~~(currentPos / 6);
+      var col = currentPos % 6;
+      var orb = this.game.board.orbAtPosition(row, col);
+      orb && orb.setColor(text[i]);
+      currentPos += 1;
+    }
+  };
+
   Painter.prototype.changeColor = function (e) {
     this.color = $(e.currentTarget).find('img').attr('color');
     this.$hoverOrb.attr('src', Orb.colors[this.color]);
-  };
-
-  Painter.prototype.displayOptions = function () {
-    Object.keys(Orb.colors).forEach(function (color) {
-      var $li = $('<li>').addClass('orb-paint');
-
-      var src = Orb.colors[color];
-      var $orb = $('<img>').attr('src', src);
-      $orb.attr('color', color);
-
-      $li.append($orb);
-      $('#paint-colors').append($li);
-    });
   };
 
   Painter.prototype.keydown = function (e) {
@@ -73,6 +80,28 @@
     }
   };
 
+  Painter.prototype.hoverOrbHide = function (e) {
+    this.game.mouseEventsEnable();
+
+    this.$hoverOrb.hide();
+    $('body').css('cursor', 'default');
+    $(document).off('mousemove');
+    $('#board').off('click');
+  };
+
+  Painter.prototype.hoverOrbShow = function (e) {
+    this.game.mouseEventsDisable();
+
+    this.color = $(e.currentTarget).find('img').attr('color');
+    this.$hoverOrb.attr('src', Orb.colors[this.color]);
+    this.$hoverOrb.show();
+    this.hoverOrbUpdate(e);
+
+    $('body').css('cursor', 'none');
+    $(document).mousemove(this.hoverOrbUpdate.bind(this));
+    $('#board').click(this.paintOrb.bind(this));
+  };
+
   Painter.prototype.hoverOrbUpdate = function (e) {
     this.$hoverOrb.css('top', e.pageY - 45 + 'px');
     this.$hoverOrb.css('left', e.pageX - 45 + 'px');
@@ -86,18 +115,40 @@
   };
 
   Painter.prototype.mouseEventsEnable = function () {
-    $('.orb-paint').one('click', function () {
-      this.$hoverOrb.show();
-      $('body').not('#paint .button').css('cursor', 'none');
+    // for orb painting
+    $('.orb-paint').on('click', function (e) {
+      if ($(e.currentTarget).hasClass('selected')) {
+        this.hoverOrbHide(e);
+        $('.orb-paint').removeClass('selected');
+      } else {
+        this.hoverOrbShow(e);
+        $('.orb-paint').removeClass('selected');
+        $(e.currentTarget).addClass('selected');
+      }
     }.bind(this));
 
-    $('.orb-paint').click(this.changeColor.bind(this));
-    $('#board').click(this.paintOrb.bind(this));
-
+    // for textarea editing
     $('textarea').keydown(this.keydown.bind(this));
     $('textarea').on('paste', this.paste.bind(this));
 
-    $(window).mousemove(this.hoverOrbUpdate.bind(this));
+    // for applying and button hovering
+    $('#apply .button').click(this.apply.bind(this));
+    $('#apply .button').hover(
+      function () {
+        $('#apply .button.hover').css('opacity', 1);
+      },
+
+      function () {
+        $('#apply .button.hover').css('opacity', 0);
+      }
+    );
+
+    $('#apply .button').mousedown(function () {
+      $('#apply .button.click').css('opacity', 1);
+    });
+    $('#apply .button').mouseup(function () {
+      $('#apply .button.click').css('opacity', 0);
+    });
   };
 
   Painter.prototype.paintOrb = function (e) {
@@ -109,36 +160,17 @@
   Painter.prototype.paste = function (e) {
     var text = e.originalEvent.clipboardData.getData('text');
     var currentPos = e.currentTarget.selectionStart;
-    for (var i = 0; i < text.length; i++) {
-      var row = 4 - ~~(currentPos / 6);
-      var col = currentPos % 6;
-      var orb = this.game.board.orbAtPosition(row, col);
-      orb && orb.setColor(text[i]);
-      currentPos += 1;
+    if (this.validText(text)) {
+      this.applyText(text, currentPos);
     }
   };
 
-  Painter.prototype.toggle = function () {
-    this.on ? this.turnOff() : this.turnOn();
-  };
-
-  Painter.prototype.turnOff = function () {
-    this.on = false;
-    this.$hoverOrb.hide();
-    this.$el.find('.button').text('Painter');
-    this.$el.find('#paint-content').addClass('hidden');
-    this.$el.find('textarea').val('');
-
-    this.mouseEventsDisable();
-    this.game.mouseEventsEnable();
-  };
-
-  Painter.prototype.turnOn = function () {
-    this.on = true;
-    this.$el.find('.button').text('Back to game');
-    this.$el.find('#paint-content').removeClass('hidden');
-
-    this.game.mouseEventsDisable();
-    this.mouseEventsEnable();
+  Painter.prototype.validText = function (text) {
+    for (var i = 0; i < text.length; i++) {
+      if (!Orb.colors[text[i]]) {
+        return false;
+      }
+    }
+    return true;
   };
 })();
