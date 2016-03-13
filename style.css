@@ -4,6 +4,10 @@
   text-align: center;
 }
 
+#paint .title {
+  font-size: 28px;
+}
+
 img.hover-orb {
   transition: none;
   position: absolute;
