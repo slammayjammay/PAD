@@ -1,7 +1,7 @@
 # PAD ([Live](scott-mck.github.io/PAD))
 
 Inspired by the mobile game Puzzle and Dragons, as well as another online
-simulator at pad.dawnglare.com.
+simulator at http://pad.dawnglare.com.
 
 ##Demos
 Example of basic orb matching
