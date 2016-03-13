@@ -6,12 +6,12 @@ Inspired by the mobile game Puzzle and Dragons, as well as another
 ##Demos
 Example of basic orb matching
 
-<img src=".demos/matching.gif" width=500 height=300/>
+<img src="./demos/matching.gif" width=500 height=300/>
 
 Example of specific orb painting
 
-<img src=".demos/painting1.gif" width=500 height=300/>
+<img src="./demos/painting1.gif" width=500 height=300/>
 
 Example of entire board painting
 
-<img src=".demos/painting2.gif" width=500 height=300/>
+<img src="./demos/painting2.gif" width=500 height=300/>
