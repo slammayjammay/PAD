@@ -1,0 +1,27 @@
+{
+  "name": "pad",
+  "version": "1.0.0",
+  "description": "A browser game",
+  "main": "board.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "hi": "echo hi"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scott-mck/PAD.git"
+  },
+  "author": "Scott McKenzie",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/scott-mck/PAD/issues"
+  },
+  "homepage": "https://github.com/scott-mck/PAD#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-uglify": "^1.5.4"
+  },
+  "dependencies": {
+    "gulp-concat": "^2.6.0"
+  }
+}
