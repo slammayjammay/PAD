@@ -102,7 +102,7 @@ Board.prototype.dropOrb = function (orb) {
 };
 
 Board.prototype.ensureNoMatches = function () {
-  window.matches = this.getMatches();
+  var matches = this.getMatches();
   while (matches.length > 0) {
     for (var i = 0; i < matches.length; i++) {
       matches[i].randomize();
