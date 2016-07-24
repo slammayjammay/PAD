@@ -3,7 +3,7 @@ var $ = require('jquery');
 var Orb = require('./orb');
 var Match = require('./match');
 
-function Board ($el) {
+var Board = function Board ($el) {
   this.$el = $el;
   this.board = [];
   for (var i = 0; i < 10; i++) {

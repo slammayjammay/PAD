@@ -2,7 +2,7 @@ var $ = require('jquery');
 
 var Orb = require('./orb');
 
-function Painter ($el, game) {
+var Painter = function Painter ($el, game) {
   this.$el = $el;
   this.game = game;
 

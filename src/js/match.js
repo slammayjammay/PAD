@@ -1,6 +1,6 @@
 var $ = require('jquery');
 
-function Match(board, orbs, flag) {
+var Match = function Match(board, orbs, flag) {
   this.board = board;
   this.orbs = [];
   if (orbs) {

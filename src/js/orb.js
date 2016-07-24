@@ -1,6 +1,6 @@
 var $ = require('jquery');
 
-function Orb (color) {
+var Orb = function Orb (color) {
   this.imageWidth = 90;
   this.color = color;
 
