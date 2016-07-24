@@ -7,7 +7,7 @@ var cleancss = require('gulp-clean-css');
 
 gulp.task('build', function() {
   gulp.src('./dist/built.js')
-    .pipe(uglify({ mangle: true }))
+    .pipe(uglify()
     .pipe(gulp.dest('./dist/'));
 
   gulp.src('./dist/built.css')
