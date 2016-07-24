@@ -5,7 +5,7 @@
   "main": "board.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "browserify src/main.js -o dist/built.js"
+    "build": "browserify src/main.js -o dist/built.js && gulp"
   },
   "repository": {
     "type": "git",
