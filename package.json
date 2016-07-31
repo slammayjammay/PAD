@@ -4,10 +4,7 @@
   "description": "A browser game",
   "main": "board.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run buildjs && npm run buildcss && gulp",
-    "buildjs": "browserify src/js/main.js -o dist/built.js",
-    "buildcss": "sass src/scss/main.scss dist/built.css"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -20,11 +17,19 @@
   },
   "homepage": "https://github.com/scott-mck/PAD#readme",
   "devDependencies": {
+    "del": "^2.2.1",
     "gulp": "^3.9.1",
-    "gulp-uglify": "^1.5.4"
+    "gulp-browserify": "^0.5.1",
+    "gulp-clean-css": "^2.0.12",
+    "gulp-concat": "^2.6.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.3.2",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^1.5.4",
+    "gulp-watch": "^4.3.9"
   },
   "dependencies": {
-    "gulp-clean-css": "^2.0.11",
-    "gulp-concat": "^2.6.0"
+    "jquery": "^3.1.0",
+    "shrinkwrap": "^0.4.0"
   }
 }
