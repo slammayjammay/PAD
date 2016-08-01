@@ -19,7 +19,7 @@ gulp.task('js', function () {
   gulp.src(['./src/js/*.js'])
     .pipe(concat('built.js'))
     .pipe(browserify())
-    .pipe(uglify())
+    .pipe(uglify({ mangle: false }))
     .pipe(gulp.dest('dist/'));
 });
 
@@ -29,7 +29,7 @@ gulp.task('js-sourcemaps', function () {
     .pipe(sourcemaps.init())
     .pipe(concat('built.js'))
     .pipe(browserify())
-    .pipe(uglify())
+    .pipe(uglify({ mangle: false }))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest('dist/'));
 });
