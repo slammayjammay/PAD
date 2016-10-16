@@ -1,4 +1,4 @@
-# PAD ([Live](https://scott-mck.github.io/PAD))
+# PAD ([Live](https://slammayjammay.github.io/PAD))
 
 Inspired by the mobile game Puzzle and Dragons, as well as another online
 simulator at http://pad.dawnglare.com.
