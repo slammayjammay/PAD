@@ -1,0 +1,39 @@
+.orb {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  background-size: contain;
+
+  &.red { background-image: url('http://pad.dawnglare.com/Red.png'); }
+  &.blue { background-image: url('http://pad.dawnglare.com/Blue.png'); }
+  &.green { background-image: url('http://pad.dawnglare.com/Green.png'); }
+  &.light { background-image: url('http://pad.dawnglare.com/Light.png'); }
+  &.dark { background-image: url('http://pad.dawnglare.com/Dark.png'); }
+  &.heart { background-image: url('http://pad.dawnglare.com/Heart.png'); }
+
+  &.hidden {
+    opacity: 0;
+    transition: 400ms;
+  }
+
+  &.gravity {
+    transition: 600ms;
+  }
+
+  &.hover-orb {
+    opacity: .8;
+  }
+
+  &#clicked {
+    opacity: .3;
+  }
+
+  &.matched {
+    transition: 600ms;
+    opacity: 0;
+  }
+
+  &.skyfall {
+    opacity: 0;
+  }
+}
