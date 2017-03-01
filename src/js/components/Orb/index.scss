@@ -1,7 +1,9 @@
+@import '../../../sass/_settings';
+
 .orb {
   position: absolute;
-  width: 90px;
-  height: 90px;
+  width: $board-width / 6;
+  height: $board-width / 6;
   background-size: contain;
 
   &.red { background-image: url('http://pad.dawnglare.com/Red.png'); }
