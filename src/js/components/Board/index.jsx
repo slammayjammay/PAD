@@ -13,6 +13,10 @@ class Board extends React.Component {
     super(props);
 
 		this.model = new Model();
+
+		this.onMouseDown = this.onMouseDown.bind(this);
+		this.onMouseMove = this.onMouseMove.bind(this);
+		this.onMouseUp = this.onMouseUp.bind(this);
   }
 
 	/**
@@ -25,14 +29,57 @@ class Board extends React.Component {
 		};
 	}
 
+	onMouseDown(e) {
+		e.preventDefault();
+
+		this.orb = e.currentTarget;
+		let board = document.querySelector('.board-inner');
+
+		this.orbBox = this.orb.getBoundingClientRect();
+		this.boardBox = board.getBoundingClientRect();
+
+		this.dragging = true;
+	}
+
+	onMouseMove(e) {
+		if (!this.dragging) {
+			return;
+		}
+
+		let boardLeft = e.clientX - this.boardBox.left;
+		let boardBottom = e.clientY - this.boardBox.bottom;
+
+		let x = boardLeft - (this.orbBox.width / 2);
+		let y = boardBottom + (this.orbBox.width / 2);
+
+		x = Math.min(this.boardBox.width - this.orbBox.width, x);
+		x = Math.max(0, x);
+		y = Math.max(y, -this.boardBox.height + this.orbBox.height);
+		y = Math.min(0, y);
+
+		TweenMax.set(this.orb, { x, y, left: 0, bottom: 0 });
+	}
+
+	onMouseUp(e) {
+		this.dragging = false;
+		this.orb = this.orbBox = this.boardBox = null;
+	}
+
   render() {
 		let orbs = this.model.orbs().map((orb, idx) => {
-			return (<Orb color={orb.color} key={idx} style={this.getOrbStyle(orb)}/>);
+			return (
+				<Orb
+					color={orb.color}
+					key={idx}
+					style={this.getOrbStyle(orb)}
+					onMouseDown={this.onMouseDown}
+				/>
+			);
 		});
 
 		return (
       <div className="board board-outer">
-        <div className="board-inner">
+        <div className="board-inner" onMouseMove={this.onMouseMove} onMouseUp={this.onMouseUp}>
           { orbs }
         </div>
       </div>
