@@ -13,29 +13,7 @@
   &.dark { background-image: url('http://pad.dawnglare.com/Dark.png'); }
   &.heart { background-image: url('http://pad.dawnglare.com/Heart.png'); }
 
-  &.hidden {
-    opacity: 0;
-    transition: 400ms;
-  }
-
-  &.gravity {
-    transition: 600ms;
-  }
-
-  &.hover-orb {
-    opacity: .8;
-  }
-
-  &#clicked {
-    opacity: .3;
-  }
-
-  &.matched {
-    transition: 600ms;
-    opacity: 0;
-  }
-
-  &.skyfall {
-    opacity: 0;
+  &.dragging {
+    z-index: 1;
   }
 }

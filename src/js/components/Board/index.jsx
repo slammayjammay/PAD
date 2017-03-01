@@ -17,6 +17,7 @@ class Board extends React.Component {
 		this.onMouseDown = this.onMouseDown.bind(this);
 		this.onMouseMove = this.onMouseMove.bind(this);
 		this.onMouseUp = this.onMouseUp.bind(this);
+		this.isDragging = this.isDragging.bind(this);
   }
 
 	/**
@@ -29,39 +30,45 @@ class Board extends React.Component {
 		};
 	}
 
+  isDragging() {
+    return this._isDragging;
+  }
+
 	onMouseDown(e) {
 		e.preventDefault();
 
 		this.orb = e.currentTarget;
 		let board = document.querySelector('.board-inner');
 
+    this._isDragging = true;
+
+    this.orb.classList.add('dragging');
+
 		this.orbBox = this.orb.getBoundingClientRect();
 		this.boardBox = board.getBoundingClientRect();
-
-		this.dragging = true;
 	}
 
 	onMouseMove(e) {
-		if (!this.dragging) {
+		if (!this._isDragging) {
 			return;
 		}
 
-		let boardLeft = e.clientX - this.boardBox.left;
-		let boardBottom = e.clientY - this.boardBox.bottom;
+		let x = e.pageX - this.boardBox.left - (this.orbBox.width / 2);
+		let y = e.pageY - this.boardBox.bottom + (this.orbBox.width / 2);
 
-		let x = boardLeft - (this.orbBox.width / 2);
-		let y = boardBottom + (this.orbBox.width / 2);
-
+    // constrain orb to inside the board
 		x = Math.min(this.boardBox.width - this.orbBox.width, x);
 		x = Math.max(0, x);
 		y = Math.max(y, -this.boardBox.height + this.orbBox.height);
 		y = Math.min(0, y);
 
-		TweenMax.set(this.orb, { x, y, left: 0, bottom: 0 });
+		TweenMax.set(this.orb, { x, y, left: 0, bottom: 0, pointerEvents: 'none' });
 	}
 
 	onMouseUp(e) {
-		this.dragging = false;
+    this.orb.classList.remove('dragging');
+
+		this._isDragging = false;
 		this.orb = this.orbBox = this.boardBox = null;
 	}
 
@@ -73,6 +80,7 @@ class Board extends React.Component {
 					key={idx}
 					style={this.getOrbStyle(orb)}
 					onMouseDown={this.onMouseDown}
+          canSwap={this.isDragging}
 				/>
 			);
 		});
