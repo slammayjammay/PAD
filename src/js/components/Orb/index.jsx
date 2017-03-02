@@ -7,27 +7,39 @@ class Orb extends React.Component {
   constructor(props) {
     super(props);
 
-    this.onMouseMove = this.onMouseMove.bind(this);
+		this.state = {
+			isDragging: false
+		};
   }
 
-  onMouseMove(e) {
+	className() {
+		return [
+			'orb',
+			this.props.color,
+			this.state.isDragging ? 'dragging' : ''
+		].join(' ');
+	}
 
-    console.log(this.props.canSwap());
+	onMouseDown(e) {
+		e.preventDefault();
 
-    if (e.target.classList.contains('dragging')) {
-      return;
-    }
-    // console.log(e.target);
-    // console.log('uh oh...');
-  }
+		this.setState({ isDragging: true });
+		this.props.onOrbHold(e);
+	}
+
+	onMouseUp(e) {
+		e.preventDefault();
+
+		this.setState({ isDragging: false });
+		this.props.onOrbRelease();
+	}
 
   render() {
     return (
       <div
-        className={`orb ${this.props.color}`}
+        className={this.className()}
 				style={this.props.style}
-				onMouseDown={this.props.onMouseDown}
-				onMouseMove={this.onMouseMove}
+				onMouseDown={this.onMouseDown.bind(this)}
       />
     );
   }

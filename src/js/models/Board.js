@@ -35,6 +35,10 @@ class Board {
 		return orbs;
 	}
 
+	slotsEqual(slot1, slot2) {
+		return slot1[0] === slot2[0] && slot1[1] === slot2[1];
+	}
+
 	/**
 	 * Performs the callback on each orb slot position.
 	 * @param {function} callback - The callback to perform.

@@ -13,11 +13,9 @@ class Board extends React.Component {
     super(props);
 
 		this.model = new Model();
-
-		this.onMouseDown = this.onMouseDown.bind(this);
-		this.onMouseMove = this.onMouseMove.bind(this);
-		this.onMouseUp = this.onMouseUp.bind(this);
-		this.isDragging = this.isDragging.bind(this);
+		this.state = {
+			isDragging: false
+		};
   }
 
 	/**
@@ -30,69 +28,107 @@ class Board extends React.Component {
 		};
 	}
 
-  isDragging() {
-    return this._isDragging;
-  }
+	onOrbHold(e) {
+		this.orbEl = e.currentTarget;
+		this.currentPosition = this.getBoardPositionAtPoint(e.pageX, e.pageY);
+		this.currentSlot = this.getSlotAtPoint(e.pageX, e.pageY);
+		this.setState({ isDragging: true });
 
-	onMouseDown(e) {
-		e.preventDefault();
+		// switch the left and top styles on the orb to transforms
+		TweenMax.set(this.orbEl, {
+			left: 0,
+			bottom: 0,
+			pointerEvents: 'none'
+		});
 
-		this.orb = e.currentTarget;
-		let board = document.querySelector('.board-inner');
-
-    this._isDragging = true;
-
-    this.orb.classList.add('dragging');
-
-		this.orbBox = this.orb.getBoundingClientRect();
-		this.boardBox = board.getBoundingClientRect();
+		this.setOrbPosition(e);
 	}
 
 	onMouseMove(e) {
-		if (!this._isDragging) {
+		if (!this.state.isDragging) {
 			return;
 		}
 
-		let x = e.pageX - this.boardBox.left - (this.orbBox.width / 2);
-		let y = e.pageY - this.boardBox.bottom + (this.orbBox.width / 2);
-
-    // constrain orb to inside the board
-		x = Math.min(this.boardBox.width - this.orbBox.width, x);
-		x = Math.max(0, x);
-		y = Math.max(y, -this.boardBox.height + this.orbBox.height);
-		y = Math.min(0, y);
-
-		TweenMax.set(this.orb, { x, y, left: 0, bottom: 0, pointerEvents: 'none' });
+		this.setOrbPosition(e);
+		this.checkForSlotChange(e);
 	}
 
 	onMouseUp(e) {
-    this.orb.classList.remove('dragging');
+		this.orbEl = null;
+		this.setState({ isDragging: false });
+	}
 
-		this._isDragging = false;
-		this.orb = this.orbBox = this.boardBox = null;
+	setOrbPosition(e) {
+		let { x, y } = this.getBoardPositionAtPoint(e.pageX, e.pageY);
+
+		// center the orb around cursor
+		x = x - ORB_SIZE / 2;
+		y = -y + ORB_SIZE / 2;
+
+		// constrain orb to inside the board
+		x = Math.min(this.boardBox.width - ORB_SIZE, x);
+		x = Math.max(0, x);
+		y = Math.max(y, -this.boardBox.height + ORB_SIZE);
+		y = Math.min(0, y);
+
+		TweenMax.set(this.orbEl, { x, y });
+	}
+
+	getBoardPositionAtPoint(pageX, pageY) {
+		let x = pageX - this.boardBox.left;
+		let y = -(pageY - this.boardBox.height - this.boardBox.top);
+
+		return { x, y };
+	}
+
+	getSlotAtPoint(pageX, pageY) {
+		let { x, y } = this.getBoardPositionAtPoint(pageX, pageY);
+		return [~~(x / 90), ~~(y / 90)];
+	}
+
+	checkForSlotChange(e) {
+		let newSlot = this.getSlotAtPoint(e.pageX, e.pageY);
+
+		if (this.model.slotsEqual(this.currentSlot, newSlot)) {
+			return;
+		}
+
+		this.currentSlot = newSlot;
 	}
 
   render() {
 		let orbs = this.model.orbs().map((orb, idx) => {
 			return (
 				<Orb
+					ref="orb"
 					color={orb.color}
 					key={idx}
 					style={this.getOrbStyle(orb)}
-					onMouseDown={this.onMouseDown}
-          canSwap={this.isDragging}
+					onOrbHold={this.onOrbHold.bind(this)}
 				/>
 			);
+			// onOrbRelease={this.onOrbRelease.bind(this)}
 		});
 
 		return (
       <div className="board board-outer">
-        <div className="board-inner" onMouseMove={this.onMouseMove} onMouseUp={this.onMouseUp}>
+        <div
+					ref="board"
+					className="board-inner"
+					onMouseMove={this.onMouseMove.bind(this)}
+				>
           { orbs }
         </div>
       </div>
     );
   }
+
+	componentDidMount() {
+		// TODO: calculate this on resize too
+		this.boardBox = this.refs.board.getBoundingClientRect();
+
+		window.addEventListener('mouseup', this.onMouseUp.bind(this));
+	}
 }
 
 export default Board;
