@@ -1,5 +1,4 @@
 import React from 'react';
-import 'gsap';
 
 require('./index.scss');
 
