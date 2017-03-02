@@ -1,3 +1,4 @@
+import 'gsap';
 import React from 'react';
 import ReactDom from 'react-dom';
 import Orb from '../Orb';
@@ -22,9 +23,11 @@ class Board extends React.Component {
 	 * @param {Orb} orb - The instance of the orb model.
 	 */
 	getOrbStyle(orb) {
-		return {
-			left: `${orb.position[0] * ORB_SIZE}px`,
-			bottom: `${orb.position[1] * ORB_SIZE}px`
+    let x = orb.position[0] * ORB_SIZE - ORB_SIZE / 2;
+    let y = -(orb.position[1] * ORB_SIZE) + ORB_SIZE / 2;
+
+    return {
+      transform: translate(`${x}px ${y}px`)
 		};
 	}
 
@@ -34,14 +37,7 @@ class Board extends React.Component {
 		this.currentSlot = this.getSlotAtPoint(e.pageX, e.pageY);
 		this.setState({ isDragging: true });
 
-		// switch the left and top styles on the orb to transforms
-		TweenMax.set(this.orbEl, {
-			left: 0,
-			bottom: 0,
-			pointerEvents: 'none'
-		});
-
-		this.setOrbPosition(e);
+		this.setOrbPosition(e.pageX, e.pageY);
 	}
 
 	onMouseMove(e) {
@@ -49,7 +45,7 @@ class Board extends React.Component {
 			return;
 		}
 
-		this.setOrbPosition(e);
+		this.setOrbPosition(e.pageX, e.pageY);
 		this.checkForSlotChange(e);
 	}
 
@@ -58,8 +54,8 @@ class Board extends React.Component {
 		this.setState({ isDragging: false });
 	}
 
-	setOrbPosition(e) {
-		let { x, y } = this.getBoardPositionAtPoint(e.pageX, e.pageY);
+	setOrbPosition(pageX, pageY) {
+		let { x, y } = this.getBoardPositionAtPoint(pageX, pageY);
 
 		// center the orb around cursor
 		x = x - ORB_SIZE / 2;
