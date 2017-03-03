@@ -2,7 +2,6 @@ import 'gsap';
 import React from 'react';
 import ReactDom from 'react-dom';
 import Orb from '../Orb';
-import { default as Model } from '../../models/Board';
 
 require('./index.scss');
 
@@ -34,6 +33,7 @@ class Board extends React.Component {
 					color={Orb.randomColor()}
 					key={`${x}${y}`}
 					attachToBoard={ el => this.orbs[`orb${x}${y}`] = el }
+					onOrbHold= { this.onOrbHold.bind(this) }
 				/>
 			);
 		});
@@ -74,14 +74,14 @@ class Board extends React.Component {
 
 	listenOnceForSwap() {
 		let fn = (e) => {
-			let orb = e.currentTarget;
+			let orbEl = e.currentTarget;
 
-			if (!orb.classList.contains('orb')) {
+			if (!orbEl.classList.contains('orb')) {
 				return;
 			}
 
 			this.refs.board.removeEventListener('mousemove', fn);
-			this.triggerOrbSwap(orb);
+			this.triggerOrbSwap(orbEl);
 		};
 
 		this.refs.board.addEventListener('mousemove', fn);
@@ -137,7 +137,11 @@ class Board extends React.Component {
 
 	slotChange(e) {
 		let newSlot = this.getSlotAtPoint(e.pageX, e.pageY);
-		return this.model.slotsEqual(this.currentSlot, newSlot) ? false : newSlot;
+		return this.slotsEqual(this.currentSlot, newSlot) ? false : newSlot;
+	}
+
+	slotsEqual(slot1, slot2) {
+		return slot1[0] === slot2[0] && slot1[1] === slot2[1];
 	}
 
 	render() {
