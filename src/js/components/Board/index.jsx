@@ -33,7 +33,7 @@ class Board extends React.Component {
 
 	onOrbHold(e) {
 		this.orbEl = e.currentTarget;
-		this.currentPosition = this.getBoardPositionAtPoint(e.pageX, e.pageY);
+		// this.currentPosition = this.getBoardPositionAtPoint(e.pageX, e.pageY);
 		this.currentSlot = this.getSlotAtPoint(e.pageX, e.pageY);
 		this.setState({ isDragging: true });
 
@@ -46,7 +46,30 @@ class Board extends React.Component {
 		}
 
 		this.setOrbPosition(e.pageX, e.pageY);
-		this.checkForSlotChange(e);
+
+		this.newSlot = this.slotChange(e);
+		if (this.newSlot) {
+			this.listenOnceForSwap();
+		}
+	}
+
+	listenOnceForSwap() {
+		let fn = (e) => {
+			let orb = e.currentTarget;
+
+			if (!orb.classList.contains('orb')) {
+				return;
+			}
+
+			this.refs.board.removeEventListener('mousemove', fn);
+			this.triggerOrbSwap(orb);
+		};
+
+		this.refs.board.addEventListener('mousemove', fn);
+	}
+
+	triggerOrbSwap(orb) {
+
 	}
 
 	onMouseUp(e) {
@@ -70,6 +93,13 @@ class Board extends React.Component {
 		TweenMax.set(this.orbEl, { x, y });
 	}
 
+	positionOrbAtSlot(orbEl, [slotX, slotY]) {
+	  let x = slotX * ORB_SIZE - ORB_SIZE / 2;
+    let y = -(slotY * ORB_SIZE) + ORB_SIZE / 2;
+
+		TweenMax.set(orbEl, { x, y });
+	}
+
 	getBoardPositionAtPoint(pageX, pageY) {
 		let x = pageX - this.boardBox.left;
 		let y = -(pageY - this.boardBox.height - this.boardBox.top);
@@ -82,28 +112,21 @@ class Board extends React.Component {
 		return [~~(x / 90), ~~(y / 90)];
 	}
 
-	checkForSlotChange(e) {
+	slotChange(e) {
 		let newSlot = this.getSlotAtPoint(e.pageX, e.pageY);
-
-		if (this.model.slotsEqual(this.currentSlot, newSlot)) {
-			return;
-		}
-
-		this.currentSlot = newSlot;
+		return this.model.slotsEqual(this.currentSlot, newSlot) ? false : newSlot;
 	}
 
   render() {
 		let orbs = this.model.orbs().map((orb, idx) => {
 			return (
 				<Orb
-					ref="orb"
 					color={orb.color}
 					key={idx}
-					style={this.getOrbStyle(orb)}
 					onOrbHold={this.onOrbHold.bind(this)}
+					style={this.getOrbStyle(orb)}
 				/>
 			);
-			// onOrbRelease={this.onOrbRelease.bind(this)}
 		});
 
 		return (
