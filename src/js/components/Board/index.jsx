@@ -11,7 +11,7 @@ const ORB_SIZE = 90;
 
 class Board extends React.Component {
 	constructor(props) {
-	  super(props);
+		super(props);
 
 		this.setup();
 
@@ -113,8 +113,8 @@ class Board extends React.Component {
 	}
 
 	positionOrbAtSlot(orbEl, [slotX, slotY]) {
-	  let x = slotX * ORB_SIZE - ORB_SIZE / 2;
-	  let y = -(slotY * ORB_SIZE) + ORB_SIZE / 2;
+		let x = slotX * ORB_SIZE - ORB_SIZE / 2;
+		let y = -(slotY * ORB_SIZE) + ORB_SIZE / 2;
 
 		TweenMax.set(orbEl, { x, y });
 	}
@@ -145,16 +145,16 @@ class Board extends React.Component {
 		this._board.forEach(row => orbs.push(...row));
 
 		return (
-	    <div className="board board-outer">
-	      <div
+			<div className="board board-outer">
+				<div
 					ref="board"
 					className="board-inner"
 					onMouseMove={this.onMouseMove.bind(this)}
 				>
 					{ orbs }
 				</div>
-	    </div>
-	  );
+			</div>
+		);
 	}
 
 	componentDidMount() {
