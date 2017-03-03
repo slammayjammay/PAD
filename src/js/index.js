@@ -1,5 +1,5 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import App from './components/App';
+import Game from './components/Game';
 
-ReactDom.render(<App/>, document.querySelector('#root'));
+ReactDom.render(<Game/>, document.querySelector('#root'));

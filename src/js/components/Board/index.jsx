@@ -13,27 +13,46 @@ class Board extends React.Component {
 	constructor(props) {
 	  super(props);
 
-		this.model = new Model();
+		this.setup();
+
 		this.state = {
 			isDragging: false
 		};
 	}
 
-	/**
-	 * @param {Orb} orb - The instance of the orb model.
-	 */
-	getOrbStyle(orb) {
-	  let x = orb.position[0] * ORB_SIZE - ORB_SIZE / 2;
-	  let y = -(orb.position[1] * ORB_SIZE) + ORB_SIZE / 2;
+	setup() {
+		this.orbs = {};
+		this._board = [];
 
-	  return {
-	    transform: translate(`${x}px ${y}px`)
-		};
+		for (let y = 0; y < this.props.height; y++) {
+			this._board.push([]);
+		}
+
+		this.eachSlot(([x, y]) => {
+			this._board[x][y] = (
+				<Orb
+					color={Orb.randomColor()}
+					key={`${x}${y}`}
+					ref={ el => this.orbs[`orb${x}${y}`] = el }
+				/>
+			);
+		});
+	}
+
+	/**
+	 * Performs the callback on each orb slot position.
+	 * @param {function} callback - The callback to perform.
+	 */
+	eachSlot(callback) {
+		for (let x = 0; x < this.props.height; x++) {
+			for (let y = 0; y < this.props.width; y++) {
+				callback([x, y])
+			}
+		}
 	}
 
 	onOrbHold(e) {
 		this.orbEl = e.currentTarget;
-		// this.currentPosition = this.getBoardPositionAtPoint(e.pageX, e.pageY);
 		this.currentSlot = this.getSlotAtPoint(e.pageX, e.pageY);
 		this.setState({ isDragging: true });
 
@@ -100,6 +119,10 @@ class Board extends React.Component {
 		TweenMax.set(orbEl, { x, y });
 	}
 
+	getOrbElAtPosition([x, y]) {
+		return this.orbs[`orb${x}${y}`];
+	}
+
 	getBoardPositionAtPoint(pageX, pageY) {
 		let x = pageX - this.boardBox.left;
 		let y = -(pageY - this.boardBox.height - this.boardBox.top);
@@ -118,16 +141,8 @@ class Board extends React.Component {
 	}
 
 	render() {
-		let orbs = this.model.orbs().map((orb, idx) => {
-			return (
-				<Orb
-					color={orb.color}
-					key={idx}
-					onOrbHold={this.onOrbHold.bind(this)}
-					style={this.getOrbStyle(orb)}
-				/>
-			);
-		});
+		let orbs = [];
+		this._board.forEach(row => orbs.push(...row));
 
 		return (
 	    <div className="board board-outer">
@@ -136,8 +151,8 @@ class Board extends React.Component {
 					className="board-inner"
 					onMouseMove={this.onMouseMove.bind(this)}
 				>
-	        { orbs }
-	      </div>
+					{ orbs }
+				</div>
 	    </div>
 	  );
 	}
@@ -145,6 +160,16 @@ class Board extends React.Component {
 	componentDidMount() {
 		// TODO: calculate this on resize too
 		this.boardBox = this.refs.board.getBoundingClientRect();
+
+		// position each orb correctly
+		this.eachSlot(([x ,y]) => {
+			let orb = this.getOrbElAtPosition([x, y]);
+
+			TweenMax.set(orb, {
+				x: x * ORB_SIZE,
+				y: y * ORB_SIZE
+			});
+		});
 
 		window.addEventListener('mouseup', this.onMouseUp.bind(this));
 	}

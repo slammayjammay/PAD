@@ -3,6 +3,13 @@ import React from 'react';
 require('./index.scss');
 
 class Orb extends React.Component {
+  static colors = ['red', 'blue', 'green', 'light', 'dark', 'heart'];
+
+  static randomColor() {
+    let idx = ~~(Math.random() * Orb.colors.length);
+    return Orb.colors[idx];
+  }
+
   constructor(props) {
     super(props);
 
@@ -11,7 +18,7 @@ class Orb extends React.Component {
 		};
   }
 
-	className() {
+	getClassName() {
 		return [
 			'orb',
 			this.props.color,
@@ -36,8 +43,8 @@ class Orb extends React.Component {
   render() {
     return (
       <div
-        className={this.className()}
-				style={this.props.style}
+        ref="el"
+        className={this.getClassName()}
 				onMouseDown={this.onMouseDown.bind(this)}
       />
     );

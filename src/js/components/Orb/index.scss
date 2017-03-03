@@ -2,6 +2,8 @@
 
 .orb {
   position: absolute;
+  left: 0;
+  bottom: 0;
   width: $board-width / 6;
   height: $board-width / 6;
   background-size: contain;
