@@ -87,8 +87,8 @@ class Board extends React.Component {
 		this.refs.board.addEventListener('mousemove', fn);
 	}
 
-	triggerOrbSwap(orb) {
-
+	triggerOrbSwap(orbEl) {
+		this.positionOrbAtSlot(orbEl, this.currentPosition, 0);
 	}
 
 	onMouseUp(e) {
@@ -112,11 +112,11 @@ class Board extends React.Component {
 		TweenMax.set(this.orbEl, { x, y });
 	}
 
-	positionOrbAtSlot(orbEl, [slotX, slotY]) {
-		let x = slotX * ORB_SIZE - ORB_SIZE / 2;
-		let y = -(slotY * ORB_SIZE) + ORB_SIZE / 2;
+	positionOrbAtSlot(orbEl, [slotX, slotY], duration = 0) {
+		let x = slotX * ORB_SIZE;
+		let y = -(slotY * ORB_SIZE);
 
-		TweenMax.set(orbEl, { x, y });
+		TweenMax.to(orbEl, duration, { x, y });
 	}
 
 	getOrbElAtPosition([x, y]) {
@@ -149,7 +149,7 @@ class Board extends React.Component {
 				<div
 					ref="board"
 					className="board-inner"
-					onMouseMove={this.onMouseMove.bind(this)}
+					onMouseMove={ this.onMouseMove.bind(this) }
 				>
 					{ orbs }
 				</div>
@@ -163,12 +163,8 @@ class Board extends React.Component {
 
 		// position each orb correctly
 		this.eachSlot(([x ,y]) => {
-			let orb = this.getOrbElAtPosition([x, y]);
-
-			TweenMax.set(orb, {
-				x: x * ORB_SIZE,
-				y: y * ORB_SIZE
-			});
+			let orbEl = this.getOrbElAtPosition([x, y]);
+			this.positionOrbAtSlot(orbEl, [x, y]);
 		});
 
 		window.addEventListener('mouseup', this.onMouseUp.bind(this));
