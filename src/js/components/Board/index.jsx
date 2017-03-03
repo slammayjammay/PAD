@@ -29,11 +29,11 @@ class Board extends React.Component {
 		}
 
 		this.eachSlot(([x, y]) => {
-			this._board[x][y] = (
+			this._board[y][x] = (
 				<Orb
 					color={Orb.randomColor()}
 					key={`${x}${y}`}
-					ref={ el => this.orbs[`orb${x}${y}`] = el }
+					attachToBoard={ el => this.orbs[`orb${x}${y}`] = el }
 				/>
 			);
 		});
@@ -44,9 +44,9 @@ class Board extends React.Component {
 	 * @param {function} callback - The callback to perform.
 	 */
 	eachSlot(callback) {
-		for (let x = 0; x < this.props.height; x++) {
-			for (let y = 0; y < this.props.width; y++) {
-				callback([x, y])
+		for (let y = 0; y < this.props.height; y++) {
+			for (let x = 0; x < this.props.width; x++) {
+				callback([x, y]);
 			}
 		}
 	}
@@ -88,7 +88,7 @@ class Board extends React.Component {
 	}
 
 	triggerOrbSwap(orbEl) {
-		this.positionOrbAtSlot(orbEl, this.currentPosition, 0);
+		this.positionOrbAtSlot(orbEl, this.currentSlot, 0);
 	}
 
 	onMouseUp(e) {
@@ -132,7 +132,7 @@ class Board extends React.Component {
 
 	getSlotAtPoint(pageX, pageY) {
 		let { x, y } = this.getBoardPositionAtPoint(pageX, pageY);
-		return [~~(x / 90), ~~(y / 90)];
+		return [~~(y / 90), ~~(x / 90)];
 	}
 
 	slotChange(e) {
@@ -164,6 +164,7 @@ class Board extends React.Component {
 		// position each orb correctly
 		this.eachSlot(([x ,y]) => {
 			let orbEl = this.getOrbElAtPosition([x, y]);
+
 			this.positionOrbAtSlot(orbEl, [x, y]);
 		});
 

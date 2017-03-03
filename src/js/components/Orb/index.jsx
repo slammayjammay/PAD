@@ -49,6 +49,10 @@ class Orb extends React.Component {
 			/>
 		);
 	}
+
+	componentDidMount() {
+		this.props.attachToBoard(this.refs.el);
+	}
 }
 
 export default Orb;
