@@ -83,7 +83,7 @@ class Board extends React.Component {
 		let [ x, y ] = this.currentSlot;
 		let [ newX, newY ] = this.newSlot;
 
-		this.positionOrbAtSlot(orbEl, [ x, y ], 0);
+		this.positionOrbAtSlot(orbEl, [ x, y ], 0.2);
 
 		this.orbs[`orb${x}${y}`] = orbEl;
 		this.orbs[`orb${newX}${newY}`] = this.orbEl; 
