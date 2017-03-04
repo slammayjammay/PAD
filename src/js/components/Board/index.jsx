@@ -66,7 +66,7 @@ class Board extends React.Component {
 
 		this.setOrbPosition(e.pageX, e.pageY);
 
-		this.newSlot = this.slotChange(e);
+		this.newSlot = this.detectSlotChange(e);
 		if (this.newSlot) {
 			let swappedOrb = this.getOrbElAtPosition(this.newSlot);
 			this.triggerOrbSwap(swappedOrb);
@@ -133,11 +133,20 @@ class Board extends React.Component {
 
 	getSlotAtPoint(pageX, pageY) {
 		let { x, y } = this.getBoardPositionAtPoint(pageX, pageY);
-		return [~~(x / 90), ~~(y / 90)];
+		let [slotX, slotY] = [~~(x / 90), ~~(y / 90)]; 
+
+		if (Math.abs(x - slotX * 90) <= 5 || Math.abs(y - slotY * 90) <= 5) {
+			return;
+		}
+
+		return [slotX, slotY];
 	}
 
-	slotChange(e) {
+	detectSlotChange(e) {
 		let newSlot = this.getSlotAtPoint(e.pageX, e.pageY);
+		if (!newSlot) {
+			return;
+		}
 		return this.slotsEqual(this.currentSlot, newSlot) ? false : newSlot;
 	}
 
