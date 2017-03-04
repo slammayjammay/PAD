@@ -68,31 +68,32 @@ class Board extends React.Component {
 
 		this.newSlot = this.slotChange(e);
 		if (this.newSlot) {
-			this.listenOnceForSwap();
+			let swappedOrb = this.getOrbElAtPosition(this.newSlot);
+			this.triggerOrbSwap(swappedOrb);
+			this.currentSlot = this.newSlot;
+			this.newSlot = null;
 		}
 	}
 
-	listenOnceForSwap() {
-		let fn = (e) => {
-			let orbEl = e.currentTarget;
-
-			if (!orbEl.classList.contains('orb')) {
-				return;
-			}
-
-			this.refs.board.removeEventListener('mousemove', fn);
-			this.triggerOrbSwap(orbEl);
-		};
-
-		this.refs.board.addEventListener('mousemove', fn);
-	}
-
 	triggerOrbSwap(orbEl) {
-		this.positionOrbAtSlot(orbEl, this.currentSlot, 0);
+		if (!orbEl) {
+			return;
+		}
+
+		let [ x, y ] = this.currentSlot;
+		let [ newX, newY ] = this.newSlot;
+
+		this.positionOrbAtSlot(orbEl, [ x, y ], 0);
+
+		this.orbs[`orb${x}${y}`] = orbEl;
+		this.orbs[`orb${newX}${newY}`] = this.orbEl; 
 	}
 
 	onMouseUp(e) {
-		this.orbEl = null;
+		this.positionOrbAtSlot(this.orbEl, this.currentSlot);
+		TweenMax.set(this.orbEl, { pointerEvents: 'all' });
+
+		this.currentSlot = this.orbEl = null;
 		this.setState({ isDragging: false });
 	}
 
@@ -109,7 +110,7 @@ class Board extends React.Component {
 		y = Math.max(y, -this.boardBox.height + ORB_SIZE);
 		y = Math.min(0, y);
 
-		TweenMax.set(this.orbEl, { x, y });
+		TweenMax.set(this.orbEl, { x, y, pointerEvents: 'none' });
 	}
 
 	positionOrbAtSlot(orbEl, [slotX, slotY], duration = 0) {
@@ -132,7 +133,7 @@ class Board extends React.Component {
 
 	getSlotAtPoint(pageX, pageY) {
 		let { x, y } = this.getBoardPositionAtPoint(pageX, pageY);
-		return [~~(y / 90), ~~(x / 90)];
+		return [~~(x / 90), ~~(y / 90)];
 	}
 
 	slotChange(e) {
