@@ -1,159 +1,159 @@
 #paint {
-  float: left;
-  width: 300px;
-  text-align: center;
+	float: left;
+	width: 300px;
+	text-align: center;
 
-  .title {
-    font-size: 28px;
-  }
+	.title {
+		font-size: 28px;
+	}
 
-  textarea {
-    padding-left: 20px;
-    width: 235px;
-    height: 230px;
-    font-size: 40px;
-    letter-spacing: 15px;
-    font-family: monospace;
-    resize: none;
-  }
+	textarea {
+		padding-left: 20px;
+		width: 235px;
+		height: 230px;
+		font-size: 40px;
+		letter-spacing: 15px;
+		font-family: monospace;
+		resize: none;
+	}
 }
 
 img.hover-orb {
-  transition: none;
-  position: absolute;
-  z-index: 10;
-  pointer-events: none;
-  opacity: .5;
+	transition: none;
+	position: absolute;
+	z-index: 10;
+	pointer-events: none;
+	opacity: .5;
 }
 
 #paint-content {
-  margin-top: 20px;
-  opacity: 1;
-  transition: 500ms;
+	margin-top: 20px;
+	opacity: 1;
+	transition: 500ms;
 }
 
 #paint-colors {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  list-style-type: none;
-  padding: 0px;
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	list-style-type: none;
+	padding: 0px;
 
-  &:after {
-    display: block;
-    clear: both;
-    content: '';
-  }
+	&:after {
+		display: block;
+		clear: both;
+		content: '';
+	}
 
-  #heart {
-    border-radius: 8px;
-    padding: 0px;
-  }
+	#heart {
+		border-radius: 8px;
+		padding: 0px;
+	}
 
-  .selected {
-    background: lightgray;
-  }
+	.selected {
+		background: lightgray;
+	}
 
-  li {
-    border-radius: 50px;
-    padding: 5px;
-    width: 80px;
-    height: 80px;
-  }
+	li {
+		border-radius: 50px;
+		padding: 5px;
+		width: 80px;
+		height: 80px;
+	}
 }
 
 li.orb-paint img {
-  width: 80px;
-  height: auto;
+	width: 80px;
+	height: auto;
 }
 
 #apply {
-  .button {
-    position: relative;
-    display: inline-block;
-    margin: auto;
-    padding: 3px 10px;
-    border-radius: 3px;
-    font-size: 20px;
-    text-align: center;
-    cursor: pointer;
-  }
+	.button {
+		position: relative;
+		display: inline-block;
+		margin: auto;
+		padding: 3px 10px;
+		border-radius: 3px;
+		font-size: 20px;
+		text-align: center;
+		cursor: pointer;
+	}
 
-  .button.transition {
-    opacity: 0;
-    transition: 300ms;
-    background: linear-gradient(#AAFFB1, #00AB0D);
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: -10;
-  }
+	.button.transition {
+		opacity: 0;
+		transition: 300ms;
+		background: linear-gradient(#AAFFB1, #00AB0D);
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: -10;
+	}
 
-  .button.transition.static {
-    opacity: 1;
-    background: radial-gradient(#AAFFB1 40%, #00AB0D);
-  }
+	.button.transition.static {
+		opacity: 1;
+		background: radial-gradient(#AAFFB1 40%, #00AB0D);
+	}
 
-  .button.transition.hover {
-    background: radial-gradient(#AAFFB1 50%, #00AB0D);
-  }
+	.button.transition.hover {
+		background: radial-gradient(#AAFFB1 50%, #00AB0D);
+	}
 
-  .button.transition.click {
-    transition: 200ms;
-    background: radial-gradient(#AAFFB1 5%, #00AB0D);
-  }
+	.button.transition.click {
+		transition: 200ms;
+		background: radial-gradient(#AAFFB1 5%, #00AB0D);
+	}
 }
 
 
 #game {
-  margin: auto;
-  width: 540px;
-  height: 450px;
-  background: black;
-  padding: 15px;
+	margin: auto;
+	width: 540px;
+	height: 450px;
+	background: black;
+	padding: 15px;
 }
 
 #board {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background-image: url('http://pad.dawnglare.com/bg.png');
-  background-size: 180px;
+	position: relative;
+	width: 100%;
+	height: 100%;
+	background-image: url('http://pad.dawnglare.com/bg.png');
+	background-size: 180px;
 }
 
 .orb {
-  transition: 100ms;
-  position: absolute;
-  width: 90px;
-  height: 90px;
+	transition: 100ms;
+	position: absolute;
+	width: 90px;
+	height: 90px;
 
-  &.hidden {
-    opacity: 0;
-    transition: 400ms;
-  }
+	&.hidden {
+		opacity: 0;
+		transition: 400ms;
+	}
 
-  &.gravity {
-    transition: 600ms;
-  }
+	&.gravity {
+		transition: 600ms;
+	}
 
-  &.hover-orb {
-    opacity: .8;
-  }
+	&.hover-orb {
+		opacity: .8;
+	}
 
-  &#clicked {
-    opacity: .3;
-  }
+	&#clicked {
+		opacity: .3;
+	}
 
-  &.matched {
-    transition: 600ms;
-    opacity: 0;
-  }
+	&.matched {
+		transition: 600ms;
+		opacity: 0;
+	}
 
-  &.skyfall {
-    opacity: 0;
-  }
+	&.skyfall {
+		opacity: 0;
+	}
 }
