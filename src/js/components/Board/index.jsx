@@ -50,7 +50,7 @@ class Board extends React.Component {
 				callback([x, y]);
 			}
 		}
-	}	
+	}
 
 	match() {
 		let matches = this.getAllMatches();
@@ -99,7 +99,7 @@ class Board extends React.Component {
 		this.positionOrbAtSlot(orbEl, [ x, y ], DURATION);
 
 		this.orbs[`orb${x}${y}`] = orbEl;
-		this.orbs[`orb${newX}${newY}`] = this.orbEl; 
+		this.orbs[`orb${newX}${newY}`] = this.orbEl;
 	}
 
 	onMouseUp(e) {
@@ -146,7 +146,7 @@ class Board extends React.Component {
 
 	getSlotAtPoint(pageX, pageY) {
 		let { x, y } = this.getBoardPositionAtPoint(pageX, pageY);
-		let [slotX, slotY] = [~~(x / 90), ~~(y / 90)]; 
+		let [slotX, slotY] = [~~(x / 90), ~~(y / 90)];
 
 		if (Math.abs(x - slotX * 90) <= 5 || Math.abs(y - slotY * 90) <= 5) {
 			return;

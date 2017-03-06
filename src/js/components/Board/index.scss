@@ -1,17 +1,17 @@
 @import '../../../sass/_settings';
 
 .board-outer {
-  margin: auto;
-  width: $board-width;
-  height: $board-height;
-  background: black;
-  padding: 15px;
+	margin: auto;
+	width: $board-width;
+	height: $board-height;
+	background: black;
+	padding: 15px;
 
-  .board-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    background-image: url('http://pad.dawnglare.com/bg.png');
-    background-size: $board-width / 3;
-  }
+	.board-inner {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		background-image: url('http://pad.dawnglare.com/bg.png');
+		background-size: $board-width / 3;
+	}
 }
