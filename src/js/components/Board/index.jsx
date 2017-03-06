@@ -7,6 +7,7 @@ require('./index.scss');
 
 // NO! make responsive.
 const ORB_SIZE = 90;
+const DURATION = 0.2;
 
 class Board extends React.Component {
 	constructor(props) {
@@ -49,7 +50,19 @@ class Board extends React.Component {
 				callback([x, y]);
 			}
 		}
+	}	
+
+	match() {
+		let matches = this.getAllMatches();
 	}
+
+	getAllMatches() {
+		this.eachSlot(([x, y]) => {
+			let orb = this.getOrbElAtPosition([x, y]);
+
+		});
+	}
+
 
 	onOrbHold(e) {
 		this.orbEl = e.currentTarget;
@@ -83,14 +96,14 @@ class Board extends React.Component {
 		let [ x, y ] = this.currentSlot;
 		let [ newX, newY ] = this.newSlot;
 
-		this.positionOrbAtSlot(orbEl, [ x, y ], 0.2);
+		this.positionOrbAtSlot(orbEl, [ x, y ], DURATION);
 
 		this.orbs[`orb${x}${y}`] = orbEl;
 		this.orbs[`orb${newX}${newY}`] = this.orbEl; 
 	}
 
 	onMouseUp(e) {
-		this.positionOrbAtSlot(this.orbEl, this.currentSlot);
+		this.positionOrbAtSlot(this.orbEl, this.currentSlot, DURATION);
 		TweenMax.set(this.orbEl, { pointerEvents: 'all' });
 
 		this.currentSlot = this.orbEl = null;
