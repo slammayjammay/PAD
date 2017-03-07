@@ -54,6 +54,7 @@ class Board extends React.Component {
 
   match() {
     let matches = this.getAllMatches();
+    console.log(matches);
   }
 
   getAllMatches() {
@@ -101,12 +102,12 @@ class Board extends React.Component {
   getOrbMatchInDirection([x, y], [dirX, dirY]) {
     let match = [];
     let currentOrb = this.getOrbAtPosition([x, y]);
-    let nextX = null;
+    let nextX, nextY = null;
     let nextOrb = null;
 
     let lookDir = -1;
-    let nextX = x + 1 * lookDir * dirX;
-    let nextY = y + 1 * lookDir * dirY;
+    nextX = x + 1 * lookDir * dirX;
+    nextY = y + 1 * lookDir * dirY;
 
     // look negative then positive
     while (nextOrb = this.getOrbAtPosition([nextX, nextY])) {
@@ -119,7 +120,7 @@ class Board extends React.Component {
         // switch directions
         nextX = x + 1;
         nextY = y + 1;
-        lookDir =* -1;
+        lookDir *= -1;
         continue;
       }
 
@@ -179,6 +180,8 @@ class Board extends React.Component {
 
     this.currentSlot = this.orbEl = null;
     this.setState({ isDragging: false });
+
+    this.match();
   }
 
   setOrbPosition(pageX, pageY) {
