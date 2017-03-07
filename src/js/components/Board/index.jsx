@@ -57,12 +57,83 @@ class Board extends React.Component {
 	}
 
 	getAllMatches() {
-		this.eachSlot(([x, y]) => {
-			let orb = this.getOrbElAtPosition([x, y]);
+		let matches = [];
+		let alreadyMatched = {};
 
+		this.eachSlot(([x, y]) => {
+			if (alreadyMatched[this.getOrbElAtPosition([x, y])]) {
+				return;
+			}
+
+			let horizontalMatch = this.getOrbHorizontalMatch([x, y]);
+			let verticalMatch = this.getOrbVerticalMatch([x, y]);
+
+			let match = new Set(...horizontalMatch, ...verticalMatch);
+
+			// push match in
+			matches.push(match);
+
+			// cache matched orbs
+			match.forEach(orbEl => alreadyMatched[orbEl] = true);
 		});
+
+		return matches;
 	}
 
+	getOrbHorizontalMatch([x, y]) {
+		return this.getOrbMatchInDirection([x, y], [1, 0]);
+	}
+
+	getOrbVerticalMatch([x, y]) {
+		return this.getOrbMatchInDirection([x, y], [0, 1]);
+	}
+
+	/**
+	 * Looks for a match starting from the start position, and move in the
+	 * direction of dirX and dirY, negative and positive.
+	 *
+	 * @param {integer} x - The x value of the start position.
+	 * @param {integer} y - The y value of the start position.
+	 * @param {integer} dirX - The direction of X to move in.
+	 * @param {integer} dirY - The direction of Y to move in.
+	 * @return {array} - An array of orb elements.
+	 */
+	getOrbMatchInDirection([x, y], [dirX, dirY]) {
+		let match = [];
+		let currentOrb = this.getOrbAtPosition([x, y]);
+		let nextX = null;
+		let nextOrb = null;
+
+		let lookDir = -1;
+		let nextX = x + 1 * lookDir * dirX;
+		let nextY = y + 1 * lookDir * dirY;
+
+		// look negative then positive
+		while (nextOrb = this.getOrbAtPosition([nextX, nextY])) {
+			if (!nextOrb && lookDir === 1) {
+				// we're done looking
+				break;
+			}
+
+			if (!nextOrb) {
+				// switch directions
+				nextX = x + 1;
+				nextY = y + 1;
+				lookDir =* -1;
+				continue;
+			}
+
+			if (nextOrb.props.color === currentOrb.props.color) {
+				// push in the match and increment x or y
+				match.push(this.getOrbElAtPosition([nextX, nextY]));
+
+				nextX = nextX + 1 * lookDir * dirX;
+				nextY = nextY + 1 * lookDir * dirY;
+			}
+		}
+
+		return match.length >= 3 ? match : [];
+	}
 
 	onOrbHold(e) {
 		this.orbEl = e.currentTarget;
@@ -131,6 +202,13 @@ class Board extends React.Component {
 		let y = -(slotY * ORB_SIZE);
 
 		TweenMax.to(orbEl, duration, { x, y });
+	}
+
+	getOrbAtPosition([x, y]) {
+		if (!this._board[y]) {
+			return null;
+		}
+		return this._board[y][x];
 	}
 
 	getOrbElAtPosition([x, y]) {
