@@ -3,56 +3,56 @@ import React from 'react';
 require('./index.scss');
 
 class Orb extends React.Component {
-	static colors = ['red', 'blue', 'green', 'light', 'dark', 'heart'];
+  static colors = ['red', 'blue', 'green', 'light', 'dark', 'heart'];
 
-	static randomColor() {
-		let idx = ~~(Math.random() * Orb.colors.length);
-		return Orb.colors[idx];
-	}
+  static randomColor() {
+    let idx = ~~(Math.random() * Orb.colors.length);
+    return Orb.colors[idx];
+  }
 
-	constructor(props) {
-		super(props);
+  constructor(props) {
+    super(props);
 
-		this.state = {
-			isDragging: false
-		};
-	}
+    this.state = {
+      isDragging: false
+    };
+  }
 
-	getClassName() {
-		return [
-			'orb',
-			this.props.color,
-			this.state.isDragging ? 'dragging' : ''
-		].join(' ');
-	}
+  getClassName() {
+    return [
+      'orb',
+      this.props.color,
+      this.state.isDragging ? 'dragging' : ''
+    ].join(' ');
+  }
 
-	onMouseDown(e) {
-		e.preventDefault();
+  onMouseDown(e) {
+    e.preventDefault();
 
-		this.setState({ isDragging: true });
-		this.props.onOrbHold(e);
-	}
+    this.setState({ isDragging: true });
+    this.props.onOrbHold(e);
+  }
 
-	onMouseUp(e) {
-		e.preventDefault();
+  onMouseUp(e) {
+    e.preventDefault();
 
-		this.setState({ isDragging: false });
-		this.props.onOrbRelease();
-	}
+    this.setState({ isDragging: false });
+    this.props.onOrbRelease();
+  }
 
-	render() {
-		return (
-			<div
-				ref="el"
-				className={this.getClassName()}
-				onMouseDown={this.onMouseDown.bind(this)}
-			/>
-		);
-	}
+  render() {
+    return (
+      <div
+        ref="el"
+        className={this.getClassName()}
+        onMouseDown={this.onMouseDown.bind(this)}
+      />
+    );
+  }
 
-	componentDidMount() {
-		this.props.attachToBoard(this.refs.el);
-	}
+  componentDidMount() {
+    this.props.attachToBoard(this.refs.el);
+  }
 }
 
 export default Orb;
